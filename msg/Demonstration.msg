@@ -1,0 +1,2 @@
+string name
+trajectory_msgs/JointTrajectory joint_trajectory
