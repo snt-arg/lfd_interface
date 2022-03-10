@@ -2,7 +2,7 @@
 
     <arg name="working_dir" value="$(find lfd_interface)/data" />
 
-    <node name="demonstration_storage" pkg="lfd_interface" type="demonstration_storage.py" output="screen">
+    <node name="lfd_storage" pkg="lfd_interface" type="lfd_storage.py" output="screen">
         <param name="working_dir" value="$(arg working_dir)"/>
     </node>
     

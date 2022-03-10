@@ -17,7 +17,7 @@ move_group_interface_(planning_group), visual_tools_(base_frame)
     std::copy(move_group_interface_.getJointModelGroupNames().begin(),
         move_group_interface_.getJointModelGroupNames().end(), std::ostream_iterator<std::string>(std::cout, ", "));
     
-    pub_save_trajectory_ = nh_.advertise<lfd_interface::Demonstration>("save_demonstration", 1, false);
+    pub_save_demonstration_ = nh_.advertise<lfd_interface::DemonstrationMsg>("save_demonstration", 1, false);
 }
 
 LFDRecorder::~LFDRecorder() {}
@@ -44,7 +44,7 @@ trajectory_msgs::JointTrajectoryPoint LFDRecorder::currentJointState()
 void LFDRecorder::visualizeTrajectory()
 {
     moveit_msgs::RobotTrajectory viz_trajectory;
-    viz_trajectory.joint_trajectory = joint_trajectory_;
+    viz_trajectory.joint_trajectory = demonstration_.joint_trajectory;
     
     visual_tools_.publishTrajectoryLine(viz_trajectory, joint_model_group_);
     visual_tools_.trigger();
@@ -52,12 +52,8 @@ void LFDRecorder::visualizeTrajectory()
 
 void LFDRecorder::saveDemonstration()
 {
-    lfd_interface::Demonstration demonstration;
-    demonstration.name = demonstration_name_;
-    demonstration.joint_trajectory = joint_trajectory_;
-
     //publish the trajectory to be saved by the python node
-    pub_save_trajectory_.publish(demonstration);
+    pub_save_demonstration_.publish(demonstration_);
 }
 
 void LFDRecorder::run()
@@ -65,7 +61,8 @@ void LFDRecorder::run()
     int i = 0;
     std::string prompt;
 
-    joint_trajectory_.joint_names = move_group_interface_.getJointNames();
+    demonstration_.joint_trajectory.joint_names = move_group_interface_.getJointNames();
+    demonstration_.name = demonstration_name_;
 
     ROS_INFO_NAMED(LOGNAME, "Recording started, hit ctrl+c when demonstration is finished");
 
@@ -76,7 +73,7 @@ void LFDRecorder::run()
         visual_tools_.prompt(prompt);
         visual_tools_.deleteAllMarkers();
         publishText("Configuration #" + std::to_string(i));
-        joint_trajectory_.points.push_back(currentJointState());
+        demonstration_.joint_trajectory.points.push_back(currentJointState());
         visualizeTrajectory();
         saveDemonstration();
     }

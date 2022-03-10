@@ -63,13 +63,14 @@ find_package(Boost REQUIRED system filesystem date_time thread)
 ## Generate messages in the 'msg' folder
 add_message_files(
   FILES
-  Demonstration.msg
+  DemonstrationMsg.msg
 )
 
 ## Generate services in the 'srv' folder
 add_service_files(
   FILES
   GetDemonstration.srv
+  TrainDemonstration.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -149,6 +150,7 @@ include_directories(SYSTEM ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIR} ${EIGEN3_
 
 add_library(${PROJECT_NAME}
   src/${PROJECT_NAME}/lfd_recorder.cpp
+  src/${PROJECT_NAME}/lfd_trainer.cpp
 )
 
 ## Add cmake target dependencies of the library
@@ -161,7 +163,8 @@ add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EX
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/lfd_interface_node.cpp)
 
-add_executable(lfd_interface_node src/lfd_interface_node.cpp)
+add_executable(lfd_recorder_node src/lfd_recorder_node.cpp)
+add_executable(lfd_trainer_node src/lfd_trainer_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -179,7 +182,8 @@ add_executable(lfd_interface_node src/lfd_interface_node.cpp)
 # )
 
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${Boost_LIBRARIES})
-target_link_libraries(lfd_interface_node ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${PROJECT_NAME})
+target_link_libraries(lfd_recorder_node ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${PROJECT_NAME})
+target_link_libraries(lfd_trainer_node ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${PROJECT_NAME})
 
 #############
 ## Install ##

@@ -9,7 +9,7 @@
 #include <moveit_visual_tools/moveit_visual_tools.h>
 
 //LFD
-#include <lfd_interface/Demonstration.h>
+#include <lfd_interface/DemonstrationMsg.h>
 
 class LFDRecorder
 {
@@ -28,11 +28,10 @@ private:
     moveit_visual_tools::MoveItVisualTools visual_tools_;
 
     //recorder variables
-    int num_datapoints_;
-    trajectory_msgs::JointTrajectory joint_trajectory_;
+    lfd_interface::DemonstrationMsg demonstration_;
 
     //ros stuff
-    ros::Publisher pub_save_trajectory_;
+    ros::Publisher pub_save_demonstration_;
 
 private:
 

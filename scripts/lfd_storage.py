@@ -7,7 +7,7 @@ import os
 import rospy
 import pickle
 
-from lfd_interface.msg import Demonstration
+from lfd_interface.msg import DemonstrationMsg
 from lfd_interface.srv import GetDemonstration, GetDemonstrationRequest, GetDemonstrationResponse
 
 
@@ -15,11 +15,11 @@ class DemonstrationStorage(object):
 
     def __init__(self):
         self.filename_template = "demonstrations/{}.pickle"
-        rospy.Subscriber("save_demonstration", Demonstration, self.subcb_save_trajectory)
+        rospy.Subscriber("save_demonstration", DemonstrationMsg, self.subcb_save_trajectory)
         self.service = rospy.Service('get_demonstration', GetDemonstration, self.servicecb_get_demonstration)
 
 
-    def subcb_save_trajectory(self, msg : Demonstration):
+    def subcb_save_trajectory(self, msg : DemonstrationMsg):
 
         filename = self.filename_template.format(msg.name)
 
@@ -33,23 +33,26 @@ class DemonstrationStorage(object):
             rospy.logerr(exception)
 
     def servicecb_get_demonstration(self, req : GetDemonstrationRequest):
-
         filename = self.filename_template.format(req.name)
-
+        res = GetDemonstrationResponse()
         try:
 
             with open(filename, 'rb') as file:
                 demonstration = pickle.load(file)
 
-            return GetDemonstrationResponse(demonstration)
+            res.Demonstration = demonstration
+            res.success = True
 
         except OSError as exception:
+            res.success = False
             rospy.logerr(exception)
     
+        return res
 
+        
 if __name__ == "__main__":
 
-    rospy.init_node("demonstration_storage", anonymous=False)
+    rospy.init_node("lfd_storage", anonymous=False)
 
     os.chdir(rospy.get_param("~working_dir"))
     
