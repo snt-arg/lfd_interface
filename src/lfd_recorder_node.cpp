@@ -1,8 +1,11 @@
 #include <lfd_interface/lfd_recorder.h>
 
+#include <rosparam_shortcuts/rosparam_shortcuts.h>
+
+
 int main(int argc, char** argv)
 {
-    ros::init(argc,argv,"lfd_interface_node");
+    ros::init(argc,argv,"lfd_recorder_node");
     ros::NodeHandle pnh("~");
     ros::AsyncSpinner spinner(1);
     spinner.start();
@@ -16,8 +19,10 @@ int main(int argc, char** argv)
     error += !rosparam_shortcuts::get(LOGNAME, pnh, "base_frame", base_frame);
     rosparam_shortcuts::shutdownIfError(LOGNAME, error);
 
-    LFDRecorder recorder(demonstration_name,planning_group,base_frame,pnh);
-    recorder.run();
+    MoveitUtil moveit_util(planning_group,base_frame);
+
+    LFDRecorder recorder(moveit_util);
+    recorder.run(demonstration_name);
 
     ros::waitForShutdown();
 

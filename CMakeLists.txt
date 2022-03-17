@@ -151,6 +151,7 @@ include_directories(SYSTEM ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIR} ${EIGEN3_
 add_library(${PROJECT_NAME}
   src/${PROJECT_NAME}/lfd_recorder.cpp
   src/${PROJECT_NAME}/lfd_trainer.cpp
+  src/${PROJECT_NAME}/moveit_util.cpp
 )
 
 ## Add cmake target dependencies of the library

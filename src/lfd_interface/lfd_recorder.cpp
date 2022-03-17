@@ -1,54 +1,16 @@
 #include <lfd_interface/lfd_recorder.h>
 
-LFDRecorder::LFDRecorder(std::string demonstration_name, std::string planning_group, std::string base_frame,ros::NodeHandle& pnh):
-demonstration_name_(demonstration_name),pnh_(pnh),
-move_group_interface_(planning_group), visual_tools_(base_frame)
+LFDRecorder::LFDRecorder(MoveitUtil & moveit_util):
+moveit_util_(moveit_util)
 {
-    joint_model_group_ = move_group_interface_.getCurrentState()->getJointModelGroup(planning_group);
 
-    visual_tools_.deleteAllMarkers();
-    visual_tools_.loadRemoteControl();
-
-    publishText("Welcome to LFD Recorder");
-
-    ROS_INFO_NAMED(LOGNAME, "Reference Frame: %s", move_group_interface_.getPlanningFrame().c_str());
-    ROS_INFO_NAMED(LOGNAME, "End-Effector Frame: %s", move_group_interface_.getEndEffectorLink().c_str());
-    ROS_INFO_NAMED(LOGNAME, "Available Planning Groups:");
-    std::copy(move_group_interface_.getJointModelGroupNames().begin(),
-        move_group_interface_.getJointModelGroupNames().end(), std::ostream_iterator<std::string>(std::cout, ", "));
+    moveit_util_.publishText("Welcome to LFD Recorder");
     
     pub_save_demonstration_ = nh_.advertise<lfd_interface::DemonstrationMsg>("save_demonstration", 1, false);
 }
 
 LFDRecorder::~LFDRecorder() {}
 
-void LFDRecorder::publishText(std::string text)
-{
-    namespace rvt = rviz_visual_tools;
-    Eigen::Isometry3d text_pose = Eigen::Isometry3d::Identity();
-    text_pose.translation().z() = 1.0;
-    visual_tools_.publishText(text_pose, text.c_str(), rvt::WHITE, rvt::XLARGE);
-    visual_tools_.trigger();
-
-}
-
-trajectory_msgs::JointTrajectoryPoint LFDRecorder::currentJointState()
-{
-    moveit::core::RobotStatePtr current_state = move_group_interface_.getCurrentState();
-    trajectory_msgs::JointTrajectoryPoint joint_values;
-
-    current_state->copyJointGroupPositions(joint_model_group_, joint_values.positions);
-    return joint_values;
-}
-
-void LFDRecorder::visualizeTrajectory()
-{
-    moveit_msgs::RobotTrajectory viz_trajectory;
-    viz_trajectory.joint_trajectory = demonstration_.joint_trajectory;
-    
-    visual_tools_.publishTrajectoryLine(viz_trajectory, joint_model_group_);
-    visual_tools_.trigger();
-}
 
 void LFDRecorder::saveDemonstration()
 {
@@ -56,13 +18,15 @@ void LFDRecorder::saveDemonstration()
     pub_save_demonstration_.publish(demonstration_);
 }
 
-void LFDRecorder::run()
+void LFDRecorder::run(std::string demonstration_name)
 {
     int i = 0;
     std::string prompt;
 
-    demonstration_.joint_trajectory.joint_names = move_group_interface_.getJointNames();
-    demonstration_.name = demonstration_name_;
+    demonstration_.joint_trajectory.joint_names = moveit_util_.getMoveGroup()->getJointNames();
+    demonstration_.name = demonstration_name;
+
+    auto visual_tools = moveit_util_.getVisualTools();
 
     ROS_INFO_NAMED(LOGNAME, "Recording started, hit ctrl+c when demonstration is finished");
 
@@ -70,11 +34,11 @@ void LFDRecorder::run()
     {
         i++;
         prompt = "Ready to record Configuration #" + std::to_string(i) + ".Hit Next when in desired configuration";
-        visual_tools_.prompt(prompt);
-        visual_tools_.deleteAllMarkers();
-        publishText("Configuration #" + std::to_string(i));
-        demonstration_.joint_trajectory.points.push_back(currentJointState());
-        visualizeTrajectory();
+        visual_tools->prompt(prompt);
+        visual_tools->deleteAllMarkers();
+        moveit_util_.publishText("Configuration #" + std::to_string(i));
+        demonstration_.joint_trajectory.points.push_back(moveit_util_.currentJointState());
+        moveit_util_.visualizeJointTrajectory(demonstration_.joint_trajectory);
         saveDemonstration();
     }
     
