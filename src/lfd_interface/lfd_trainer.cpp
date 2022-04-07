@@ -29,6 +29,12 @@ bool LFDTrainer::loadDemonstration()
     }
 }
 
+lfd_interface::DemonstrationMsg LFDTrainer::fetchDemonstration()
+{
+    loadDemonstration();
+    return demonstration_;
+}
+
 bool LFDTrainer::trainDemonstration()
 {
     client_train_demonstration_.waitForExistence();

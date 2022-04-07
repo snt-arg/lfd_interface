@@ -1,0 +1,7 @@
+string name
+trajectory_msgs/JointTrajectoryPoint start
+trajectory_msgs/JointTrajectoryPoint goal
+
+---
+
+trajectory_msgs/JointTrajectory trajectory

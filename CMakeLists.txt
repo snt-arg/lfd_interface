@@ -71,6 +71,7 @@ add_service_files(
   FILES
   GetDemonstration.srv
   TrainDemonstration.srv
+  PlanLFD.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -152,6 +153,7 @@ add_library(${PROJECT_NAME}
   src/${PROJECT_NAME}/lfd_recorder.cpp
   src/${PROJECT_NAME}/lfd_trainer.cpp
   src/${PROJECT_NAME}/moveit_util.cpp
+  src/${PROJECT_NAME}/lfd_planner.cpp
 )
 
 ## Add cmake target dependencies of the library
@@ -166,6 +168,7 @@ add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EX
 
 add_executable(lfd_recorder_node src/lfd_recorder_node.cpp)
 add_executable(lfd_trainer_node src/lfd_trainer_node.cpp)
+add_executable(lfd_planner_node src/lfd_planner_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -185,6 +188,7 @@ add_executable(lfd_trainer_node src/lfd_trainer_node.cpp)
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${Boost_LIBRARIES})
 target_link_libraries(lfd_recorder_node ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${PROJECT_NAME})
 target_link_libraries(lfd_trainer_node ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${PROJECT_NAME})
+target_link_libraries(lfd_planner_node ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${PROJECT_NAME})
 
 #############
 ## Install ##

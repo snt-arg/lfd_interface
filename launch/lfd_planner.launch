@@ -1,5 +1,4 @@
 <launch>
-
     <arg name="robot_nickname" value="yumi"/>
     <arg name="working_dir" default="$(find lfd_interface)/data" />
 
@@ -9,7 +8,7 @@
 
     <include file="$(find lfd_interface)/launch/lfd_storage.launch"/>
     
-    <node name="lfd_recorder_node" pkg="lfd_interface" type="lfd_recorder_node" output="screen">
+    <node name="lfd_planner_node" pkg="lfd_interface" type="lfd_planner_node" output="screen">
         <param name="demonstration_name" value="$(arg name)"/>
         <rosparam command="load" file="$(arg config_file)" />
         <!-- <remap from="/joint_states" to="/$(arg robot_nickname)/rws/joint_states"/> -->
