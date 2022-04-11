@@ -10,6 +10,8 @@ moveit_util_(moveit_util)
 
     auto visual_tools = moveit_util_.getVisualTools();
     visual_tools->deleteAllMarkers();
+
+    pub_displayplan_ = nh_.advertise<moveit_msgs::DisplayTrajectory>("/move_group/display_planned_path", 10);
 }
 
 LFDPlanner::~LFDPlanner()
@@ -33,9 +35,45 @@ void LFDPlanner::getPlan(trajectory_msgs::JointTrajectoryPoint start,
 void LFDPlanner::run()
 {
     moveit_util_.visualizeJointTrajectory(demonstration_.joint_trajectory);
-    auto demo_size = demonstration_.joint_trajectory.points.size();
-    getPlan(demonstration_.joint_trajectory.points[0],
-            demonstration_.joint_trajectory.points[demo_size-1]);
+    moveit_util_.getVisualTools()->prompt("press next to get the plan and visualize the planned trajectory");
+    getPlan(demonstration_.joint_trajectory.points.front(),
+            demonstration_.joint_trajectory.points.back());
     
     moveit_util_.visualizeJointTrajectory(plan_);
+    refine();
+    displayPlannedPath();
+
+    moveit_util_.getVisualTools()->prompt("press next to execute the planned trajectory");
+    
+    executePlan();
+}
+
+void LFDPlanner::refine()
+{
+    trajectory_msgs::JointTrajectoryPoint jtp = demonstration_.joint_trajectory.points.back();
+    std::vector<double> zero_vel(jtp.positions.size(),0);
+    jtp.velocities = zero_vel;
+
+    jtp.time_from_start = jtp.time_from_start + ros::Duration(0.5);
+
+    plan_.points.push_back(jtp);
+}
+
+void LFDPlanner::displayPlannedPath()
+{
+    moveit_msgs::DisplayTrajectory dt;
+    moveit_msgs::RobotTrajectory rt;
+    
+    
+    dt.model_id = "yumi";
+    rt.joint_trajectory = plan_;
+    dt.trajectory.push_back(rt);
+    pub_displayplan_.publish(dt);
+}
+
+void LFDPlanner::executePlan()
+{
+    moveit_msgs::RobotTrajectory rt;
+    rt.joint_trajectory = plan_;
+    moveit_util_.getMoveGroup()->execute(rt);
 }

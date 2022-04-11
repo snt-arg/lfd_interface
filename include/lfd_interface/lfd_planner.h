@@ -11,6 +11,9 @@
 
 #include <lfd_interface/moveit_util.h>
 
+#include <moveit_msgs/DisplayTrajectory.h>
+#include <moveit_msgs/RobotTrajectory.h>
+
 class LFDPlanner
 {
 private:
@@ -27,10 +30,16 @@ private:
 
     ros::ServiceClient client_plan_lfd_;
     trajectory_msgs::JointTrajectory plan_;
+
+    ros::Publisher pub_displayplan_;
 private:
 
     void getPlan(trajectory_msgs::JointTrajectoryPoint start,
                 trajectory_msgs::JointTrajectoryPoint goal);
+    void refine();
+    void displayPlannedPath();
+
+    void executePlan();
 
 public:
     LFDPlanner(std::string demonstration_name, MoveitUtil & moveit_util);
