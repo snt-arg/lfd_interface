@@ -40,13 +40,11 @@ void MoveitUtil::publishText(std::string text)
 
 }
 
-trajectory_msgs::JointTrajectoryPoint MoveitUtil::currentJointState()
+void MoveitUtil::currentJointState(trajectory_msgs::JointTrajectoryPoint & joint_values)
 {
     moveit::core::RobotStatePtr current_state = move_group_->getCurrentState();
-    trajectory_msgs::JointTrajectoryPoint joint_values;
 
     current_state->copyJointGroupPositions(joint_model_group_, joint_values.positions);
-    return joint_values;
 }
 
 void MoveitUtil::visualizeJointTrajectory(trajectory_msgs::JointTrajectory & trajectory)

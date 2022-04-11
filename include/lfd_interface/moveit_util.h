@@ -28,6 +28,6 @@ public:
     VisualToolsPtr getVisualTools();
 
     void publishText(std::string text);
-    trajectory_msgs::JointTrajectoryPoint currentJointState();
+    void currentJointState(trajectory_msgs::JointTrajectoryPoint & joint_values);
     void visualizeJointTrajectory(trajectory_msgs::JointTrajectory & trajectory);
 };

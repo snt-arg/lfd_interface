@@ -11,10 +11,13 @@ class LFDRecorder
 {
 private:
     const std::string LOGNAME{"lfd_recorder"};
+    const double JOINTMOVE_THRESH =  std::numeric_limits<float>::epsilon();
+    const int RECORDER_LOOP_RATE = 20;
 
     ros::NodeHandle nh_;
 
     MoveitUtil& moveit_util_;
+
     //recorder variables
     lfd_interface::DemonstrationMsg demonstration_;
 
@@ -24,6 +27,7 @@ private:
 private:
 
     void saveDemonstration();
+    bool robotHasMoved(const trajectory_msgs::JointTrajectoryPoint & newstate);
 
 public:
     LFDRecorder(MoveitUtil & moveit_util);
