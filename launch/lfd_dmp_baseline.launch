@@ -1,0 +1,16 @@
+<launch>
+
+    <arg name="name" default="testdemo"/>
+    <arg name="demo_count" default="4"/>
+
+    <arg name="config_file" value="$(find lfd_interface)/config/demonstrations/default.yaml"/>
+
+    <include file="$(find lfd_interface)/launch/lfd_storage.launch"/>
+    
+    <node name="lfd_dmp_baseline" pkg="lfd_interface" type="lfd_dmp_baseline" output="screen">
+        <param name="demonstration_name" value="$(arg name)"/>
+        <param name="demo_count" value="$(arg demo_count)"/>
+        <rosparam command="load" file="$(arg config_file)" />
+    </node>
+
+</launch>

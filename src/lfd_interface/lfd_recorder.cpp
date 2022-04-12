@@ -7,10 +7,20 @@ moveit_util_(moveit_util)
     moveit_util_.publishText("Welcome to LFD Recorder");
     
     pub_save_demonstration_ = nh_.advertise<lfd_interface::DemonstrationMsg>("save_demonstration", 1, false);
+
+    sub_keycommand_ = nh_.subscribe("keyboard_command", 1 ,&LFDRecorder::subCBSetStopFlag,this);
 }
 
 LFDRecorder::~LFDRecorder() {}
 
+void LFDRecorder::subCBSetStopFlag(const std_msgs::String::ConstPtr& msg)
+{
+    if (msg->data == "s")
+    {
+        STOP_FLAG = true;
+    }
+    
+}
 
 void LFDRecorder::saveDemonstration()
 {
@@ -20,6 +30,9 @@ void LFDRecorder::saveDemonstration()
 
 void LFDRecorder::run(std::string demonstration_name)
 {
+    STOP_FLAG=false;
+    demonstration_.joint_trajectory.points.clear();
+
     trajectory_msgs::JointTrajectoryPoint current_joint_state;
     ros::Rate loop_rate(RECORDER_LOOP_RATE);
 
@@ -28,7 +41,7 @@ void LFDRecorder::run(std::string demonstration_name)
 
     auto visual_tools = moveit_util_.getVisualTools();
 
-    ROS_INFO_NAMED(LOGNAME, "Recording started, hit ctrl+c when demonstration is finished");
+    ROS_INFO_NAMED(LOGNAME, ("Recording " + demonstration_name + " started, hit ctrl+c when demonstration is finished").c_str());
 
     //Add current configuration as the starting point
     moveit_util_.currentJointState(current_joint_state);
@@ -41,7 +54,7 @@ void LFDRecorder::run(std::string demonstration_name)
     moveit_util_.visualizeJointTrajectory(demonstration_.joint_trajectory);
 
     //Trigger recording when robot starts moving
-    while(true)
+    while(ros::ok())
     {
         moveit_util_.currentJointState(current_joint_state);
         if(robotHasMoved(current_joint_state)) {
@@ -54,7 +67,7 @@ void LFDRecorder::run(std::string demonstration_name)
     ros::Time ref_time = ros::Time::now();
     
     //Main Recording Loop, no extra points will be added if the robot is stationary
-    while(ros::ok())
+    while(!STOP_FLAG && ros::ok())
     {
         moveit_util_.currentJointState(current_joint_state);
         current_joint_state.time_from_start = ros::Time::now() - ref_time;

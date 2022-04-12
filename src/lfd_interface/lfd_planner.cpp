@@ -1,11 +1,8 @@
 #include <lfd_interface/lfd_planner.h>
 
-LFDPlanner::LFDPlanner(std::string demonstration_name, MoveitUtil & moveit_util):
-demonstration_name_(demonstration_name), trainer(demonstration_name),
+LFDPlanner::LFDPlanner(MoveitUtil & moveit_util):
 moveit_util_(moveit_util)
 {
-    demonstration_ = trainer.fetchDemonstration();
-
     client_plan_lfd_ = nh_.serviceClient<lfd_interface::PlanLFD>("plan_lfd");
 
     auto visual_tools = moveit_util_.getVisualTools();
@@ -16,6 +13,13 @@ moveit_util_(moveit_util)
 
 LFDPlanner::~LFDPlanner()
 {}
+
+void LFDPlanner::init(std::string demonstration_name)
+{
+    demonstration_name_ = demonstration_name;
+    trainer.init(demonstration_name);
+    demonstration_ = trainer.fetchDemonstration();
+}
 
 void LFDPlanner::getPlan(trajectory_msgs::JointTrajectoryPoint start,
                 trajectory_msgs::JointTrajectoryPoint goal)
@@ -32,20 +36,38 @@ void LFDPlanner::getPlan(trajectory_msgs::JointTrajectoryPoint start,
     }
 }
 
-void LFDPlanner::run()
+void LFDPlanner::runViz()
 {
     moveit_util_.visualizeJointTrajectory(demonstration_.joint_trajectory);
+
     moveit_util_.getVisualTools()->prompt("press next to get the plan and visualize the planned trajectory");
-    getPlan(demonstration_.joint_trajectory.points.front(),
-            demonstration_.joint_trajectory.points.back());
+
+    trajectory_msgs::JointTrajectoryPoint start;
+    moveit_util_.currentJointState(start);
+
+    getPlan(start , demonstration_.joint_trajectory.points.back());
+    
+    refine();
     
     moveit_util_.visualizeJointTrajectory(plan_);
-    refine();
     displayPlannedPath();
 
     moveit_util_.getVisualTools()->prompt("press next to execute the planned trajectory");
     
     executePlan();
+}
+
+void LFDPlanner::runExec()
+{
+    trajectory_msgs::JointTrajectoryPoint start;
+    moveit_util_.currentJointState(start);
+
+    getPlan(start , demonstration_.joint_trajectory.points.back());
+    
+    refine();
+
+    executePlan();
+
 }
 
 void LFDPlanner::refine()

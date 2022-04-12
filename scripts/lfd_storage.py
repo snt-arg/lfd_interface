@@ -20,7 +20,7 @@ class DemonstrationStorage(object):
 
 
     def subcb_save_trajectory(self, msg : DemonstrationMsg):
-        print (msg)
+        #print (msg)
         filename = self.filename_template.format(msg.name)
 
         try:

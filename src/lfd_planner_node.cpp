@@ -19,8 +19,9 @@ int main(int argc, char** argv)
 
     MoveitUtil moveit_util(planning_group,base_frame);
 
-    LFDPlanner planner(demonstration_name, moveit_util);
-    planner.run(); 
+    LFDPlanner planner(moveit_util);
+    planner.init(demonstration_name);
+    planner.runViz(); 
 
     ros::waitForShutdown();
 

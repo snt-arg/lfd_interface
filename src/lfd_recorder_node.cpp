@@ -11,10 +11,10 @@ int main(int argc, char** argv)
     spinner.start();
 
     //Fetch params
-    std::string demonstration_name,planning_group,base_frame;
+    std::string demo_namebase,planning_group,base_frame, demo_name;
     std::size_t error = 0;
-    std::string LOGNAME{"lfd_recorder"};
-    error += !rosparam_shortcuts::get(LOGNAME, pnh, "demonstration_name", demonstration_name);
+    std::string LOGNAME{"lfd_dmp_baseline"};
+    error += !rosparam_shortcuts::get(LOGNAME, pnh, "demonstration_name", demo_namebase);
     error += !rosparam_shortcuts::get(LOGNAME, pnh, "planning_group", planning_group);
     error += !rosparam_shortcuts::get(LOGNAME, pnh, "base_frame", base_frame);
     rosparam_shortcuts::shutdownIfError(LOGNAME, error);
@@ -22,7 +22,16 @@ int main(int argc, char** argv)
     MoveitUtil moveit_util(planning_group,base_frame);
 
     LFDRecorder recorder(moveit_util);
-    recorder.run(demonstration_name);
+
+    ROS_INFO("Recording Started, Press s to start a new dmp sequence, Press ctrl+c when recording is finished");
+
+    int demo_count = 0;
+    while (ros::ok())
+    {
+        demo_name = demo_namebase + std::to_string(demo_count);
+        recorder.run(demo_name);
+        demo_count++;
+    }
 
     ros::waitForShutdown();
 

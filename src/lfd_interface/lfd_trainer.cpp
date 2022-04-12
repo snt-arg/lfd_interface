@@ -1,7 +1,6 @@
 #include <lfd_interface/lfd_trainer.h>
 
-LFDTrainer::LFDTrainer(std::string demonstration_name):
-demonstration_name_(demonstration_name)
+LFDTrainer::LFDTrainer()
 {
     client_load_demonstration_ = nh_.serviceClient<lfd_interface::GetDemonstration>("get_demonstration");
 
@@ -10,6 +9,12 @@ demonstration_name_(demonstration_name)
 }
 
 LFDTrainer::~LFDTrainer() {}
+
+void LFDTrainer::init(std::string demonstration_name)
+{
+    demonstration_name_ = demonstration_name;
+}
+
 
 bool LFDTrainer::loadDemonstration()
 {
@@ -51,12 +56,11 @@ bool LFDTrainer::trainDemonstration()
     }
 }
 
-bool LFDTrainer::run()
+void LFDTrainer::run()
 {
-    if(loadDemonstration() && trainDemonstration())
+    if(!loadDemonstration() || !trainDemonstration())
     {
-        return true;
+        ROS_ERROR("Error While Training Demonstration");
     }
-    return false;
 }
 

@@ -2,6 +2,7 @@
 
 //ROS
 #include "ros/ros.h"
+#include "std_msgs/String.h"
 
 //LFD
 #include <lfd_interface/DemonstrationMsg.h>
@@ -23,14 +24,19 @@ private:
 
     //ros stuff
     ros::Publisher pub_save_demonstration_;
+    ros::Subscriber sub_keycommand_;
+
 
 private:
 
     void saveDemonstration();
     bool robotHasMoved(const trajectory_msgs::JointTrajectoryPoint & newstate);
 
+    void subCBSetStopFlag(const std_msgs::String::ConstPtr& msg);
+
 public:
     LFDRecorder(MoveitUtil & moveit_util);
     ~LFDRecorder();
     void run(std::string demonstration_name);
+    bool STOP_FLAG = false;
 };

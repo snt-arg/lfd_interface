@@ -1,2 +1,2 @@
-planning_group: "both_arms"
+planning_group: "left_arm"
 base_frame: "yumi_base_link"

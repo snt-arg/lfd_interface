@@ -15,7 +15,8 @@ int main(int argc, char** argv)
     error += !rosparam_shortcuts::get(LOGNAME, pnh, "demonstration_name", demonstration_name);
     rosparam_shortcuts::shutdownIfError(LOGNAME, error);
 
-    LFDTrainer trainer(demonstration_name);
+    LFDTrainer trainer;
+    trainer.init(demonstration_name);
     trainer.run(); 
 
     ros::waitForShutdown();

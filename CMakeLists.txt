@@ -170,6 +170,7 @@ add_executable(lfd_recorder_node src/lfd_recorder_node.cpp)
 add_executable(lfd_trainer_node src/lfd_trainer_node.cpp)
 add_executable(lfd_planner_node src/lfd_planner_node.cpp)
 add_executable(test_node src/test_node.cpp)
+add_executable(lfd_dmp_baseline src/lfd_dmp_baseline.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -191,6 +192,7 @@ target_link_libraries(lfd_recorder_node ${catkin_LIBRARIES} ${Boost_LIBRARIES} $
 target_link_libraries(lfd_trainer_node ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${PROJECT_NAME})
 target_link_libraries(lfd_planner_node ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${PROJECT_NAME})
 target_link_libraries(test_node ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${PROJECT_NAME})
+target_link_libraries(lfd_dmp_baseline ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${PROJECT_NAME})
 
 #############
 ## Install ##

@@ -32,6 +32,7 @@ private:
     trajectory_msgs::JointTrajectory plan_;
 
     ros::Publisher pub_displayplan_;
+
 private:
 
     void getPlan(trajectory_msgs::JointTrajectoryPoint start,
@@ -39,11 +40,12 @@ private:
     void refine();
     void displayPlannedPath();
 
-    void executePlan();
-
 public:
-    LFDPlanner(std::string demonstration_name, MoveitUtil & moveit_util);
+    LFDPlanner(MoveitUtil & moveit_util);
     ~LFDPlanner();
-    void run();
+    void runViz();
+    void runExec();
+    void init(std::string demonstration_name);
+    void executePlan();
 };
 

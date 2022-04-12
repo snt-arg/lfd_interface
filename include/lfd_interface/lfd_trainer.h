@@ -28,8 +28,9 @@ private:
     bool trainDemonstration();
 
 public:
-    LFDTrainer(std::string demonstration_name);
+    LFDTrainer();
     ~LFDTrainer();
-    bool run();
+    void run();
+    void init(std::string demonstration_name);
     lfd_interface::DemonstrationMsg fetchDemonstration();
 };
