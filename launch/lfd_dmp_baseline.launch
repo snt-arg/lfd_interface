@@ -2,8 +2,12 @@
 
     <arg name="name" default="testdemo"/>
     <arg name="demo_count" default="4"/>
-
     <arg name="config_file" value="$(find lfd_interface)/config/demonstrations/default.yaml"/>
+
+    <include file="$(find lfd_dmp)/launch/dmp_bringup.launch"/>
+
+    <node name="keyboard_command" pkg="lfd_interface" type="keyboard_command.py">
+    </node>
 
     <include file="$(find lfd_interface)/launch/lfd_storage.launch"/>
     
