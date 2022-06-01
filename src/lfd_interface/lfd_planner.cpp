@@ -47,7 +47,7 @@ void LFDPlanner::runViz()
 
     getPlan(start , demonstration_.joint_trajectory.points.back());
     
-    refine();
+    // refine();
     
     moveit_util_.visualizeJointTrajectory(plan_);
     displayPlannedPath();
@@ -64,7 +64,7 @@ void LFDPlanner::runExec()
 
     getPlan(start , demonstration_.joint_trajectory.points.back());
     
-    refine();
+    // refine();
 
     executePlan();
 

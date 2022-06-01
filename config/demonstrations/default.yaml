@@ -1,2 +1,5 @@
-planning_group: "left_arm"
-base_frame: "yumi_base_link"
+planning_group: "hebi_arm"
+base_frame: "Arm/J1_base/INPUT_INTERFACE"
+
+# planning_group: "left_arm"
+# base_frame: "yumi_base_link"
