@@ -29,6 +29,7 @@ void LFDPlanner::getPlan(trajectory_msgs::JointTrajectoryPoint start,
     srv.request.name = demonstration_name_;
     srv.request.start = start;
     srv.request.goal = goal;
+    srv.request.tau = demonstration_.joint_trajectory.points.back().time_from_start.toSec();
 
     if(client_plan_lfd_.call(srv))
     {

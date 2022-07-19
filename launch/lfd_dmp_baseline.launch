@@ -3,8 +3,11 @@
     <arg name="name" default="testdemo"/>
     <arg name="demo_count" default="4"/>
     <arg name="config_file" value="$(find lfd_interface)/config/demonstrations/default.yaml"/>
+    <arg name="dmp_method" default="dmpbbo"/>
 
-    <include file="$(find lfd_dmp)/launch/dmpbbo_bringup.launch"/>
+    <include file="$(find lfd_dmp)/launch/dmp_bringup.launch">
+        <arg name="dmp_method" value="$(arg dmp_method)"/>
+    </include>
 
     <node name="keyboard_command" pkg="lfd_interface" type="keyboard_command.py">
     </node>
