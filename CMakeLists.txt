@@ -23,6 +23,7 @@ find_package(catkin REQUIRED COMPONENTS
   rosparam_shortcuts
   message_generation
   trajectory_msgs
+  actionlib
 )
 
 ## System dependencies are found with CMake's conventions
@@ -64,6 +65,7 @@ find_package(Boost REQUIRED system filesystem date_time thread)
 add_message_files(
   FILES
   DemonstrationMsg.msg
+  PlanMsg.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -75,17 +77,17 @@ add_service_files(
 )
 
 ## Generate actions in the 'action' folder
-# add_action_files(
-#   FILES
-#   Action1.action
-#   Action2.action
-# )
+add_action_files(
+  DIRECTORY action
+  FILES ControlLFD.action
+ )
 
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
   DEPENDENCIES
   std_msgs
   trajectory_msgs
+  actionlib_msgs
 )
 
 ################################################
