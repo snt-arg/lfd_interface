@@ -25,11 +25,12 @@ void LFDPlanner::getPlan(trajectory_msgs::JointTrajectoryPoint start,
                 trajectory_msgs::JointTrajectoryPoint goal)
 {
     client_plan_lfd_.waitForExistence();
+    plan_metadata_.name = demonstration_name_;
+    plan_metadata_.start = start;
+    plan_metadata_.goal = goal;
+    plan_metadata_.tau = demonstration_.joint_trajectory.points.back().time_from_start.toSec();
     lfd_interface::PlanLFD srv;
-    srv.request.name = demonstration_name_;
-    srv.request.start = start;
-    srv.request.goal = goal;
-    srv.request.tau = demonstration_.joint_trajectory.points.back().time_from_start.toSec();
+    srv.request.plan = plan_metadata_;
 
     if(client_plan_lfd_.call(srv))
     {
@@ -37,8 +38,9 @@ void LFDPlanner::getPlan(trajectory_msgs::JointTrajectoryPoint start,
     }
 }
 
-void LFDPlanner::runViz()
+void LFDPlanner::visualizePlannedTrajectory()
 {
+
     moveit_util_.visualizeJointTrajectory(demonstration_.joint_trajectory);
 
     moveit_util_.getVisualTools()->prompt("press next to get the plan and visualize the planned trajectory");
@@ -52,6 +54,17 @@ void LFDPlanner::runViz()
     
     moveit_util_.visualizeJointTrajectory(plan_);
     displayPlannedPath();
+
+}
+
+lfd_interface::PlanMsg LFDPlanner::fetchPlanMetaData()
+{
+    return plan_metadata_;
+}
+
+void LFDPlanner::runViz()
+{
+    visualizePlannedTrajectory();
 
     moveit_util_.getVisualTools()->prompt("press next to execute the planned trajectory");
     
