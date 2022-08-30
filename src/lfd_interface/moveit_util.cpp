@@ -35,7 +35,7 @@ void MoveitUtil::publishText(std::string text)
     namespace rvt = rviz_visual_tools;
     Eigen::Isometry3d text_pose = Eigen::Isometry3d::Identity();
     text_pose.translation().z() = 1.0;
-    visual_tools_->publishText(text_pose, text.c_str(), rvt::WHITE, rvt::XLARGE);
+    visual_tools_->publishText(text_pose, text.c_str(), active_color_, rvt::XLARGE);
     visual_tools_->trigger();
 
 }
@@ -52,6 +52,11 @@ void MoveitUtil::visualizeJointTrajectory(trajectory_msgs::JointTrajectory & tra
     moveit_msgs::RobotTrajectory viz_trajectory;
     viz_trajectory.joint_trajectory = trajectory;
     
-    visual_tools_->publishTrajectoryLine(viz_trajectory, joint_model_group_);
+    visual_tools_->publishTrajectoryLine(viz_trajectory, joint_model_group_, active_color_);
     visual_tools_->trigger();
+}
+
+void MoveitUtil::changeVisualizationColor(enum rviz_visual_tools::colors color)
+{
+     active_color_ = color;
 }

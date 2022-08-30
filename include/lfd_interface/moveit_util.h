@@ -24,10 +24,14 @@ public:
     MoveitUtil(std::string planning_group, std::string viz_base_frame);
     ~MoveitUtil();
 
+
+    enum rviz_visual_tools::colors active_color_ = rviz_visual_tools::LIME_GREEN;
+
     MoveGroupPtr getMoveGroup();
     VisualToolsPtr getVisualTools();
 
     void publishText(std::string text);
     void currentJointState(trajectory_msgs::JointTrajectoryPoint & joint_values);
     void visualizeJointTrajectory(trajectory_msgs::JointTrajectory & trajectory);
+    void changeVisualizationColor(enum rviz_visual_tools::colors color);
 };
