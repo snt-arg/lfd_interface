@@ -1,6 +1,7 @@
 #include <lfd_interface/lfd_recorder.h>
 #include <lfd_interface/lfd_trainer.h>
 #include <lfd_interface/lfd_planner.h>
+#include <lfd_interface/lfd_controller.h>
 
 #include <rosparam_shortcuts/rosparam_shortcuts.h>
 
@@ -36,6 +37,7 @@ int main(int argc, char** argv)
 
     LFDTrainer lfd_trainer;
     LFDPlanner lfd_planner(moveit_util);
+    LFDController lfd_controller(moveit_util);
 
 
     ROS_INFO("Press t to start training");
@@ -50,7 +52,7 @@ int main(int argc, char** argv)
         lfd_trainer.run();
     }
 
-    ROS_INFO("Training Finished, Press p to start planning with visualization, press e to directly execute the sequence");
+    ROS_INFO("Training Finished, Press p to start planning with visualization, press e to directly execute the sequence, press c to initiate the control process (if applicable)");
 
     while (ros::ok())
     {
@@ -71,6 +73,16 @@ int main(int argc, char** argv)
                 lfd_planner.runExec();
             }
             break;
+        }
+        else if (key == "c")
+        {
+            for (size_t i = 0; i < demo_count; i++)
+            {
+                lfd_planner.init(demo_namebase + std::to_string(i));
+                lfd_planner.visualizePlannedTrajectory();
+                lfd_controller.runControl(lfd_planner.fetchPlanMetaData());
+            }
+            break;            
         }
         
     }

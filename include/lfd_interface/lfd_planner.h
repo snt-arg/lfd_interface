@@ -8,6 +8,7 @@
 //LFD
 #include <lfd_interface/DemonstrationMsg.h>
 #include <lfd_interface/PlanLFD.h>
+#include <lfd_interface/PlanMsg.h>
 
 #include <lfd_interface/moveit_util.h>
 
@@ -33,6 +34,8 @@ private:
 
     ros::Publisher pub_displayplan_;
 
+    lfd_interface::PlanMsg plan_metadata_;
+
 private:
 
     void getPlan(trajectory_msgs::JointTrajectoryPoint start,
@@ -43,6 +46,8 @@ private:
 public:
     LFDPlanner(MoveitUtil & moveit_util);
     ~LFDPlanner();
+    void visualizePlannedTrajectory();
+    lfd_interface::PlanMsg fetchPlanMetaData();
     void runViz();
     void runExec();
     void init(std::string demonstration_name);

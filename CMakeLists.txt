@@ -156,6 +156,7 @@ add_library(${PROJECT_NAME}
   src/${PROJECT_NAME}/lfd_trainer.cpp
   src/${PROJECT_NAME}/moveit_util.cpp
   src/${PROJECT_NAME}/lfd_planner.cpp
+  src/${PROJECT_NAME}/lfd_controller.cpp
 )
 
 ## Add cmake target dependencies of the library
