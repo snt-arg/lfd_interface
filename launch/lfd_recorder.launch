@@ -1,8 +1,9 @@
 <launch>
 
     <arg name="name" default="testdemo"/>
+    <arg name="config" default="default"/>
 
-    <arg name="config_file" value="$(find lfd_interface)/config/demonstrations/default.yaml"/>
+    <arg name="config_file" value="$(find lfd_interface)/config/demonstrations/$(arg config).yaml"/>
 
     <node name="keyboard_command" pkg="lfd_interface" type="keyboard_command.py">
     </node>

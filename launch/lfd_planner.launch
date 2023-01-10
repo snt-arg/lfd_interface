@@ -4,7 +4,9 @@
 
     <arg name="name" default="testdemo"/>
 
-    <arg name="config_file" value="$(find lfd_interface)/config/demonstrations/default.yaml"/>
+    <arg name="config" default="default"/>
+
+    <arg name="config_file" value="$(find lfd_interface)/config/demonstrations/$(arg config).yaml"/>
 
     <include file="$(find lfd_interface)/launch/lfd_storage.launch"/>
     

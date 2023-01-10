@@ -2,7 +2,9 @@
 
     <arg name="name" default="testdemo"/>
     <arg name="demo_count" default="4"/>
-    <arg name="config_file" value="$(find lfd_interface)/config/demonstrations/default.yaml"/>
+    <arg name="config" default="default"/>
+
+    <arg name="config_file" value="$(find lfd_interface)/config/demonstrations/$(arg config).yaml"/>
     <arg name="dmp_method" default="dmpbbo"/>
 
     <include file="$(find lfd_dmp)/launch/dmp_bringup.launch">
