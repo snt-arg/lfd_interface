@@ -74,6 +74,7 @@ add_service_files(
   GetDemonstration.srv
   TrainDemonstration.srv
   PlanLFD.srv
+  DemoCount.srv
 )
 
 ## Generate actions in the 'action' folder
