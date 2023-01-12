@@ -1,0 +1,10 @@
+# goal
+string name
+bool train
+bool visualize
+bool execute
+bool control
+---
+#result
+bool success
+---
