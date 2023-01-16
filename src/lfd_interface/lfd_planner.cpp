@@ -14,9 +14,10 @@ moveit_util_(moveit_util)
 LFDPlanner::~LFDPlanner()
 {}
 
-void LFDPlanner::init(std::string demonstration_name)
+void LFDPlanner::init(std::string demonstration_name, double duration/*=0.0*/)
 {
     demonstration_name_ = demonstration_name;
+    duration_ = duration;
     trainer.init(demonstration_name);
     demonstration_ = trainer.fetchDemonstration();
 }
@@ -28,7 +29,11 @@ void LFDPlanner::getPlan(trajectory_msgs::JointTrajectoryPoint start,
     plan_metadata_.name = demonstration_name_;
     plan_metadata_.start = start;
     plan_metadata_.goal = goal;
-    plan_metadata_.tau = demonstration_.joint_trajectory.points.back().time_from_start.toSec();
+    if (duration_ == 0.0)
+        plan_metadata_.tau = demonstration_.joint_trajectory.points.back().time_from_start.toSec();
+    else
+        plan_metadata_.tau = duration_;
+
     lfd_interface::PlanLFD srv;
     srv.request.plan = plan_metadata_;
 

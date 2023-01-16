@@ -23,6 +23,7 @@ private:
     ros::NodeHandle nh_;
     //name of the trained demonstration to use for planning
     std::string demonstration_name_;
+    double duration_;
 
     MoveitUtil& moveit_util_;
     //just for testing
@@ -50,7 +51,7 @@ public:
     lfd_interface::PlanMsg fetchPlanMetaData();
     void runViz();
     void runExec();
-    void init(std::string demonstration_name);
+    void init(std::string demonstration_name, double duration=0.0);
     void executePlan();
 };
 

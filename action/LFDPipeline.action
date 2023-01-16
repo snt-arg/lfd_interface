@@ -1,5 +1,6 @@
 # goal
 string name
+float64 duration
 bool train
 bool visualize
 bool execute
