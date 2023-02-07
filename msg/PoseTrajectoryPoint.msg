@@ -1,0 +1,4 @@
+geometry_msgs/Pose pose
+geometry_msgs/Pose velocity
+geometry_msgs/Pose acceleration
+duration time_from_start

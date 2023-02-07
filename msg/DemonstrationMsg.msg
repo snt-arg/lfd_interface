@@ -1,2 +1,3 @@
 string name
 trajectory_msgs/JointTrajectory joint_trajectory
+PoseTrajectory pose_trajectory
