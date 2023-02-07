@@ -1,9 +1,12 @@
 #include <lfd_interface/moveit_util.h>
 
-MoveitUtil::MoveitUtil(std::string planning_group, std::string viz_base_frame)
+//TODO: viz_base_frame is no longer used, remove it from the whole code!
+MoveitUtil::MoveitUtil(std::string planning_group, std::string viz_base_frame):
+robot_model_loader_("robot_description"), kinematic_model_(robot_model_loader_.getModel()),
+kinematic_state_(new moveit::core::RobotState(kinematic_model_))
 {
     move_group_ = std::make_shared<moveit::planning_interface::MoveGroupInterface>(planning_group);
-    visual_tools_ = std::make_shared<moveit_visual_tools::MoveItVisualTools>(viz_base_frame);
+    visual_tools_ = std::make_shared<moveit_visual_tools::MoveItVisualTools>(move_group_->getPlanningFrame());
 
     joint_model_group_ = move_group_->getCurrentState()->getJointModelGroup(planning_group);
 
@@ -59,4 +62,34 @@ void MoveitUtil::visualizeJointTrajectory(trajectory_msgs::JointTrajectory & tra
 void MoveitUtil::changeVisualizationColor(enum rviz_visual_tools::colors color)
 {
      active_color_ = color;
+}
+
+lfd_interface::PoseTrajectoryPoint MoveitUtil::jointToPose(trajectory_msgs::JointTrajectoryPoint & joint_states)
+{
+    kinematic_state_->setJointGroupPositions(joint_model_group_,joint_states.positions);
+    const Eigen::Isometry3d& end_effector_state = kinematic_state_->getGlobalLinkTransform(move_group_->getEndEffectorLink());
+    lfd_interface::PoseTrajectoryPoint pose_values;
+    pose_values.pose = tf2::toMsg(end_effector_state);
+    return pose_values;
+}
+
+void MoveitUtil::currentPose(lfd_interface::PoseTrajectoryPoint & pose_values)
+{
+    trajectory_msgs::JointTrajectoryPoint joint_states;
+    currentJointState(joint_states);
+    pose_values = jointToPose(joint_states);
+    // visual_tools_->publishAxisLabeled(pose, "s");
+    // visual_tools_->trigger();
+}
+
+void MoveitUtil::visualizePosePath(lfd_interface::PoseTrajectory & trajectory)
+{
+    std::vector<geometry_msgs::Pose> waypoints;
+    for(lfd_interface::PoseTrajectoryPoint point: trajectory.points)
+    {
+        waypoints.push_back(point.pose);
+    }
+    
+    visual_tools_->publishPath(waypoints, active_color_);
+    visual_tools_->trigger();
 }
