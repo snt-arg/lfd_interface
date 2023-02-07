@@ -30,8 +30,9 @@ private:
 private:
 
     void saveDemonstration();
-    bool robotHasMoved(const trajectory_msgs::JointTrajectoryPoint & newstate);
-
+    bool robotHasMoved(const lfd_interface::PoseTrajectoryPoint & newstate);
+    double orientationDifference(const geometry_msgs::Quaternion &q1, const geometry_msgs::Quaternion &q2);
+    double positionDifference(const geometry_msgs::Pose &p1, const geometry_msgs::Pose &p2);
     void subCBSetStopFlag(const std_msgs::String::ConstPtr& msg);
 
 public:
