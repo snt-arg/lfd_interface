@@ -18,6 +18,8 @@
 #include <lfd_interface/PoseTrajectory.h>
 #include <lfd_interface/PoseTrajectoryPoint.h>
 
+#include <moveit/trajectory_processing/iterative_time_parameterization.h>
+
 class MoveitUtil
 {
     typedef std::shared_ptr<moveit::planning_interface::MoveGroupInterface> MoveGroupPtr;
@@ -51,4 +53,6 @@ public:
     lfd_interface::PoseTrajectoryPoint jointToPose(trajectory_msgs::JointTrajectoryPoint & joint_states);
     void currentPose(lfd_interface::PoseTrajectoryPoint & pose_values);
     void visualizePosePath(lfd_interface::PoseTrajectory & trajectory);
+
+    void timing(trajectory_msgs::JointTrajectory & plan);
 };

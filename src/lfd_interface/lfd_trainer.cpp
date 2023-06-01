@@ -1,6 +1,7 @@
 #include <lfd_interface/lfd_trainer.h>
 
-LFDTrainer::LFDTrainer()
+LFDTrainer::LFDTrainer(MoveitUtil & moveit_util):
+moveit_util_(moveit_util)
 {
     client_load_demonstration_ = nh_.serviceClient<lfd_interface::GetDemonstration>("get_demonstration");
 

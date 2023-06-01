@@ -2,7 +2,7 @@
 
 
 LFDPipeline::LFDPipeline(std::string planning_group,std::string base_frame):
-moveit_util_(planning_group,base_frame), lfd_planner_(moveit_util_), lfd_controller_(moveit_util_),
+moveit_util_(planning_group,base_frame),lfd_trainer_(moveit_util_), lfd_planner_(moveit_util_), lfd_controller_(moveit_util_),
 as_lfd_pipeline_(nh_, "lfd_pipeline", boost::bind(&LFDPipeline::executeCBLFDPipeline, this, _1), false)
 {
     sc_democount_ = nh_.serviceClient<lfd_interface::DemoCount>("fetch_demo_count");

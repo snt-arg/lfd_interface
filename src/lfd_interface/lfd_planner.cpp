@@ -1,7 +1,7 @@
 #include <lfd_interface/lfd_planner.h>
 
 LFDPlanner::LFDPlanner(MoveitUtil & moveit_util):
-moveit_util_(moveit_util)
+moveit_util_(moveit_util), trainer(moveit_util)
 {
     client_plan_lfd_ = nh_.serviceClient<lfd_interface::PlanLFD>("plan_lfd");
 
@@ -41,6 +41,7 @@ void LFDPlanner::getPlan(trajectory_msgs::JointTrajectoryPoint start,
     {
         plan_ = srv.response.trajectory;
     }
+    moveit_util_.timing(plan_);
 }
 
 void LFDPlanner::visualizePlannedTrajectory()

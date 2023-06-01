@@ -8,6 +8,8 @@
 #include <lfd_interface/GetDemonstration.h>
 #include <lfd_interface/TrainDemonstration.h>
 
+#include <lfd_interface/moveit_util.h>
+
 class LFDTrainer
 {
 private:
@@ -23,12 +25,14 @@ private:
     lfd_interface::TrainDemonstration srv_train_demonstration_;
     lfd_interface::DemonstrationMsg demonstration_;
 
+    MoveitUtil& moveit_util_;
+
 private:
     bool loadDemonstration();
     bool trainDemonstration();
 
 public:
-    LFDTrainer();
+    LFDTrainer(MoveitUtil & moveit_util);
     ~LFDTrainer();
     void run();
     void init(std::string demonstration_name);
