@@ -93,3 +93,21 @@ void MoveitUtil::visualizePosePath(lfd_interface::PoseTrajectory & trajectory)
     visual_tools_->publishPath(waypoints, active_color_);
     visual_tools_->trigger();
 }
+
+void MoveitUtil::timing(trajectory_msgs::JointTrajectory & plan)
+{
+
+    trajectory_processing::IterativeParabolicTimeParameterization iptp;
+    moveit::core::RobotState start_state(*move_group_->getCurrentState());
+
+    robot_trajectory::RobotTrajectory trajectory(move_group_->getRobotModel(), joint_model_group_);
+
+    trajectory.setRobotTrajectoryMsg(start_state, plan);
+    iptp.computeTimeStamps(trajectory);
+    
+
+    moveit_msgs::RobotTrajectory trajectory_msg;
+    trajectory.getRobotTrajectoryMsg(trajectory_msg);
+    plan = trajectory_msg.joint_trajectory;
+    
+}
