@@ -32,6 +32,7 @@ void LFDRecorder::run(std::string demonstration_name)
 {
     STOP_FLAG=false;
     demonstration_.joint_trajectory.points.clear();
+    demonstration_.pose_trajectory.points.clear();
 
     trajectory_msgs::JointTrajectoryPoint current_joint_state;
     lfd_interface::PoseTrajectoryPoint current_pose;
