@@ -1,0 +1,15 @@
+<launch>
+
+    <arg name="demo_name" default="picknplaceee0"/>
+    <arg name="crop_time" default="8"/>
+    <arg name="scaling_factor" default="0.2"/>
+
+    <include file="$(find lfd_interface)/launch/lfd_storage.launch"/>
+
+    <node name="simple_filter" pkg="lfd_interface" type="filter.py" output="screen">
+        <param name="demo_name" value="$(arg demo_name)"/>
+        <param name="crop_time" value="$(arg crop_time)"/>
+        <param name="scaling_factor" value="$(arg scaling_factor)"/>
+    </node>
+
+</launch>
