@@ -30,7 +30,7 @@ void LFDPlanner::getPlan(trajectory_msgs::JointTrajectoryPoint start,
     plan_metadata_.start = start;
     plan_metadata_.goal = goal;
     if (duration_ == 0.0)
-        plan_metadata_.tau = demonstration_.joint_trajectory.points.back().time_from_start.toSec();
+        plan_metadata_.tau = 1;
     else
         plan_metadata_.tau = duration_;
 
