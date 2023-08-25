@@ -8,7 +8,7 @@ import numpy as np
 from lfd_interface.msg import DemonstrationMsg
 from lfd_interface.srv import GetDemonstration, DemoCount
 
-
+from lfd_smoother.util.demonstration import Demonstration
 
 def cut_after_t_seconds(demonstration, t):
     for i, point in enumerate(demonstration.joint_trajectory.points):
@@ -25,15 +25,15 @@ def scale_demonstration(demonstration, scale):
 
     return demonstration  
 
-def fix_joint_pose_count(demonstration, pose_offset=0):
-    len_joint = len(demonstration.joint_trajectory.points)
-    len_pose = len(demonstration.pose_trajectory.points)
-    print(len_joint)
-    print(len_pose)
-    if len_joint<len_pose:
-        demonstration.pose_trajectory.points = demonstration.pose_trajectory.points[pose_offset:]
+# def fix_joint_pose_count(demonstration, pose_offset=0):
+#     len_joint = len(demonstration.joint_trajectory.points)
+#     len_pose = len(demonstration.pose_trajectory.points)
+#     print(len_joint)
+#     print(len_pose)
+#     if len_joint<len_pose:
+#         demonstration.pose_trajectory.points = demonstration.pose_trajectory.points[pose_offset:]
     
-    return len_joint, demonstration
+#     return len_joint, demonstration
 
 
 def crop_and_scale(demonstration, t=10, scale=0.2):
@@ -41,6 +41,7 @@ def crop_and_scale(demonstration, t=10, scale=0.2):
     demonstration = scale_demonstration(demonstration, scale)
     demonstration.name = "filter" + demonstration.name
     return demonstration
+
 
 if __name__ == '__main__':
 
@@ -55,26 +56,91 @@ if __name__ == '__main__':
     pub_save_demo = rospy.Publisher("save_demonstration", DemonstrationMsg , queue_size=1)
 
     resp = sc_lfd_storage(name=demo_name)
-    demonstration = resp.Demonstration
-    demonstration = crop_and_scale(demonstration, float(crop_time), float(scaling_factor))
+    demo = resp.Demonstration
+
+    demo_processor = Demonstration()
+    demo_processor.read_from_ros(demo)
+    demo_processor.filter(0.01)
+    demo_filtered = demo_processor.export_to_ros(demo)
+
+    demo_filtered = crop_and_scale(demo_filtered, float(crop_time), float(scaling_factor))
     rospy.sleep(2)
-    pub_save_demo.publish(demonstration)
-    print("published")
+    pub_save_demo.publish(demo_filtered)
+    print("published")    
+
+    rospy.spin()
 
 
 
-    # resp = sc_lfd_storage(name=demo_name + "0")
-    # demonstration = resp.Demonstration
-    # len_joint, _ = fix_joint_pose_count(demonstration)
-    # pub_save_demo.publish(demonstration)
 
-    # resp = sc_lfd_storage(name=demo_name + "1")
-    # demonstration = resp.Demonstration
-    # _, demonstration = fix_joint_pose_count(demonstration, len_joint)
-    # pub_save_demo.publish(demonstration)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# if __name__ == '__main__':
+
+#     rospy.init_node('demonstration_filter_node')
+    
+#     demo_name = rospy.get_param("~demo_name")
+#     crop_time = rospy.get_param("~crop_time")
+#     scaling_factor = rospy.get_param("~scaling_factor")
+
+#     rospy.wait_for_service("get_demonstration")
+#     sc_lfd_storage = rospy.ServiceProxy("get_demonstration", GetDemonstration)
+#     pub_save_demo = rospy.Publisher("save_demonstration", DemonstrationMsg , queue_size=1)
+
+#     resp = sc_lfd_storage(name=demo_name)
+#     demonstration = resp.Demonstration
+#     demonstration = crop_and_scale(demonstration, float(crop_time), float(scaling_factor))
+#     rospy.sleep(2)
+#     pub_save_demo.publish(demonstration)
+#     print("published")
+
+
+
+#     # resp = sc_lfd_storage(name=demo_name + "0")
+#     # demonstration = resp.Demonstration
+#     # len_joint, _ = fix_joint_pose_count(demonstration)
+#     # pub_save_demo.publish(demonstration)
+
+#     # resp = sc_lfd_storage(name=demo_name + "1")
+#     # demonstration = resp.Demonstration
+#     # _, demonstration = fix_joint_pose_count(demonstration, len_joint)
+#     # pub_save_demo.publish(demonstration)
 
     
-    rospy.spin()
+#     rospy.spin()
 
 
 
