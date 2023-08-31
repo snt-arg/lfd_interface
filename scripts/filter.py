@@ -4,6 +4,7 @@ import os
 import rospy
 import pickle
 import numpy as np
+from copy import deepcopy
 
 from lfd_interface.msg import DemonstrationMsg
 from lfd_interface.srv import GetDemonstration, DemoCount
@@ -11,10 +12,30 @@ from lfd_interface.srv import GetDemonstration, DemoCount
 from lfd_smoother.util.demonstration import Demonstration
 
 def cut_after_t_seconds(demonstration, t):
+    last_point = demonstration.joint_trajectory.points[-1]
     for i, point in enumerate(demonstration.joint_trajectory.points):
         if point.time_from_start.to_sec() >= t:
             demonstration.joint_trajectory.points = demonstration.joint_trajectory.points[:i]
             break
+
+    new_last_time = demonstration.joint_trajectory.points[-1].time_from_start.to_sec()
+    delta_t = 0.05
+
+    last_point.time_from_start = rospy.Duration.from_sec(new_last_time)
+    demonstration.joint_trajectory.points[-1] = last_point
+
+    last_point1 = deepcopy(last_point)
+    last_point1.time_from_start = rospy.Duration.from_sec(new_last_time + 1 * delta_t)
+    demonstration.joint_trajectory.points.append(last_point1)
+    
+    last_point2 = deepcopy(last_point)
+    last_point2.time_from_start = rospy.Duration.from_sec(new_last_time + 2 * delta_t)
+    demonstration.joint_trajectory.points.append(last_point2)
+
+    last_point3 = deepcopy(last_point)
+    last_point3.time_from_start = rospy.Duration.from_sec(new_last_time + 3 * delta_t)
+    demonstration.joint_trajectory.points.append(last_point3)
+
 
     return demonstration
 
