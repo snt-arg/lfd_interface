@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 
 from fileinput import filename
 from logging import exception
@@ -71,13 +69,3 @@ class DemonstrationStorage(object):
     
         return res
 
-        
-if __name__ == "__main__":
-
-    rospy.init_node("lfd_storage", anonymous=False)
-
-    os.chdir(rospy.get_param("~working_dir"))
-    
-    demostorgae_manager = DemonstrationStorage()
-
-    rospy.spin() 
