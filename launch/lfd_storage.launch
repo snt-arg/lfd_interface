@@ -1,9 +1,9 @@
 <launch>
 
     <arg name="working_dir" value="$(find lfd_interface)/data" />
+    <param name="working_dir" value="$(arg working_dir)"/>
 
     <node name="lfd_storage" pkg="lfd_interface" type="lfd_storage_node.py" output="screen">
-        <param name="working_dir" value="$(arg working_dir)"/>
     </node>
     
 </launch>

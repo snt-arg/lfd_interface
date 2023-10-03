@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
     rospy.init_node("lfd_storage", anonymous=False)
 
-    os.chdir(rospy.get_param("~working_dir"))
+    os.chdir(rospy.get_param("/working_dir"))
     
     demostorage_manager = DemonstrationStorage()
 
