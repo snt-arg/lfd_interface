@@ -178,6 +178,7 @@ add_executable(lfd_trainer_node src/lfd_trainer_node.cpp)
 add_executable(lfd_planner_node src/lfd_planner_node.cpp)
 add_executable(test_node src/test_node.cpp)
 add_executable(lfd_dmp_baseline src/lfd_dmp_baseline.cpp)
+add_executable(util_node src/util_node.cpp)
 add_executable(temp_planner src/temp/planner.cpp)
 
 ## Rename C++ executable without prefix
@@ -201,6 +202,7 @@ target_link_libraries(lfd_trainer_node ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${
 target_link_libraries(lfd_planner_node ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${PROJECT_NAME})
 target_link_libraries(test_node ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${PROJECT_NAME})
 target_link_libraries(lfd_dmp_baseline ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${PROJECT_NAME})
+target_link_libraries(util_node ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${PROJECT_NAME})
 target_link_libraries(temp_planner ${catkin_LIBRARIES} ${Boost_LIBRARIES} ${PROJECT_NAME})
 
 #############
