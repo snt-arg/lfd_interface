@@ -3,6 +3,9 @@
 #include <lfd_interface/moveit_util.h>
 #include <geometry_msgs/Pose.h>
 
+#include <actionlib/server/simple_action_server.h>
+#include <lfd_interface/PlanJointAction.h>
+
 #include <rosparam_shortcuts/rosparam_shortcuts.h>
 
 trajectory_msgs::JointTrajectoryPoint getJointState(MoveitUtil & moveit_util, bool print = true)
@@ -47,6 +50,39 @@ lfd_interface::PoseTrajectoryPoint getPoseState(MoveitUtil & moveit_util, bool p
     return pose_values;
 }
 
+class PlanJointAction
+{
+protected:
+    ros::NodeHandle nh_;
+    actionlib::SimpleActionServer<lfd_interface::PlanJointAction> as_;
+    std::string action_name_;
+
+    lfd_interface::PlanJointResult result_;
+
+    MoveitUtil& moveit_util_;
+
+public:
+    PlanJointAction(std::string name, MoveitUtil & moveit_util) :
+        as_(nh_, name, boost::bind(&PlanJointAction::executeCB, this, _1), false),
+        action_name_(name), moveit_util_(moveit_util)
+    {
+        as_.start();
+    }
+
+    ~PlanJointAction(void) {}
+
+    void executeCB(const lfd_interface::PlanJointGoalConstPtr &goal)
+    {
+        moveit_util_.planPath(goal->joint_position.positions);
+        moveit_util_.getVisualTools()->prompt("press next to execute the planned trajectory");
+        moveit_util_.move();
+
+        result_.success = true;
+        as_.setSucceeded(result_);
+    }
+
+};
+
 int main(int argc, char** argv)
 {
     ros::init(argc,argv,"util_node");
@@ -70,6 +106,12 @@ int main(int argc, char** argv)
 
     auto pose_publisher = nh.advertise<geometry_msgs::Pose>("pose_state", 0);
     ros::Rate loop_rate(50); 
+
+    // std::vector<double> joint_positions = {-0.00533887, -0.80099008, 0.00345199, -2.37769808, 0.00247941, 1.57670778, 0.78244555};
+    // moveit_util.planPath(joint_positions);
+    // moveit_util.move();
+
+    PlanJointAction as_plan_joint("/plan_joint", moveit_util);
 
     while (ros::ok())
     {

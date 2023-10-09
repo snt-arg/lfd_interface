@@ -1,0 +1,6 @@
+# goal
+trajectory_msgs/JointTrajectoryPoint joint_position
+---
+#result
+bool success
+---

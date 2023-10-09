@@ -93,3 +93,19 @@ void MoveitUtil::visualizePosePath(lfd_interface::PoseTrajectory & trajectory)
     visual_tools_->publishPath(waypoints, active_color_);
     visual_tools_->trigger();
 }
+
+void MoveitUtil::planPath(std::vector<double> joint_positions)
+{
+    move_group_->setJointValueTarget(joint_positions);
+    int success = (move_group_->plan(my_plan) == moveit::core::MoveItErrorCode::SUCCESS);
+    if(success)
+    {
+        visual_tools_->publishTrajectoryLine(my_plan.trajectory_, joint_model_group_, active_color_);
+        visual_tools_->trigger();
+    }
+}
+
+void MoveitUtil::move()
+{
+    move_group_->execute(my_plan);
+}

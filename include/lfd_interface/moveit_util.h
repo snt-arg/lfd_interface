@@ -38,7 +38,7 @@ public:
     MoveitUtil(std::string planning_group, std::string viz_base_frame);
     ~MoveitUtil();
 
-
+    moveit::planning_interface::MoveGroupInterface::Plan my_plan;
     enum rviz_visual_tools::colors active_color_ = rviz_visual_tools::LIME_GREEN;
 
     MoveGroupPtr getMoveGroup();
@@ -51,4 +51,6 @@ public:
     lfd_interface::PoseTrajectoryPoint jointToPose(trajectory_msgs::JointTrajectoryPoint & joint_states);
     void currentPose(lfd_interface::PoseTrajectoryPoint & pose_values);
     void visualizePosePath(lfd_interface::PoseTrajectory & trajectory);
+    void planPath(std::vector<double> joint_positions);
+    void move();
 };
