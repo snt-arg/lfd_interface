@@ -1,0 +1,9 @@
+# goal
+geometry_msgs/Pose pose
+trajectory_msgs/JointTrajectoryPoint q_init
+---
+#result
+bool success
+---
+#feedback
+trajectory_msgs/JointTrajectoryPoint joint_position
