@@ -1,0 +1,11 @@
+<launch>
+
+    <arg name="camera" default="cognex"/>
+
+    <arg name="config_file" value="$(find lfd_interface)/config/camera/$(arg camera).yaml"/>
+    
+    <node name="camera_node" pkg="lfd_interface" type="camera_node.py" output="screen">
+        <rosparam command="load" file="$(arg config_file)" />
+    </node>
+
+</launch>
