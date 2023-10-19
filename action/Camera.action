@@ -1,0 +1,8 @@
+# goal
+string name
+geometry_msgs/Pose pose_template
+---
+#result
+geometry_msgs/Pose pose
+bool success
+---

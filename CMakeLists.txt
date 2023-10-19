@@ -82,7 +82,7 @@ add_service_files(
 ## Generate actions in the 'action' folder
 add_action_files(
   DIRECTORY action
-  FILES ControlLFD.action LFDPipeline.action PlanJoint.action PlanPose.action
+  FILES ControlLFD.action LFDPipeline.action PlanJoint.action PlanPose.action Camera.action
  )
 
 ## Generate added messages and services with any dependencies listed here

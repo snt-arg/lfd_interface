@@ -2,3 +2,5 @@ transformation_matrix:
   - [ 0.0, 1.0,  0.2875]
   - [-1.0, 0.0, -0.5618]
   - [ 0.0, 0.0,     1.0]  
+camera_ip: "172.16.0.3"
+angle_offset: 0
