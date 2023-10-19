@@ -15,6 +15,8 @@
 #include <moveit_msgs/DisplayTrajectory.h>
 #include <moveit_msgs/RobotTrajectory.h>
 
+#include <trajectory_msgs/JointTrajectoryPoint.h>
+
 class LFDPlanner
 {
 private:
@@ -32,6 +34,7 @@ private:
 
     ros::ServiceClient client_plan_lfd_;
     trajectory_msgs::JointTrajectory plan_;
+    trajectory_msgs::JointTrajectoryPoint goal_joint_;
 
     ros::Publisher pub_displayplan_;
 
@@ -51,7 +54,9 @@ public:
     lfd_interface::PlanMsg fetchPlanMetaData();
     void runViz();
     void runExec();
-    void init(std::string demonstration_name, double duration=0.0);
+    void init(std::string demonstration_name,
+            trajectory_msgs::JointTrajectoryPoint goal_joint=trajectory_msgs::JointTrajectoryPoint(),
+            double duration=0.0);
     void executePlan();
 };
 

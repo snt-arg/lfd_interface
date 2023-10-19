@@ -14,12 +14,18 @@ moveit_util_(moveit_util)
 LFDPlanner::~LFDPlanner()
 {}
 
-void LFDPlanner::init(std::string demonstration_name, double duration/*=0.0*/)
+void LFDPlanner::init(std::string demonstration_name,
+                    trajectory_msgs::JointTrajectoryPoint goal_joint,
+                    double duration/*=0.0*/)
 {
     demonstration_name_ = demonstration_name;
     duration_ = duration;
     trainer.init(demonstration_name);
     demonstration_ = trainer.fetchDemonstration();
+    if (goal_joint != trajectory_msgs::JointTrajectoryPoint()) 
+        goal_joint_ = goal_joint;
+    else
+        goal_joint_ = demonstration_.joint_trajectory.points.back();
 }
 
 void LFDPlanner::getPlan(trajectory_msgs::JointTrajectoryPoint start,
@@ -54,7 +60,7 @@ void LFDPlanner::visualizePlannedTrajectory()
     trajectory_msgs::JointTrajectoryPoint start;
     moveit_util_.currentJointState(start);
 
-    getPlan(start , demonstration_.joint_trajectory.points.back());
+    getPlan(start , goal_joint_);
     
     // refine();
     moveit_util_.changeVisualizationColor(rviz_visual_tools::LIME_GREEN);
@@ -82,7 +88,7 @@ void LFDPlanner::runExec()
     trajectory_msgs::JointTrajectoryPoint start;
     moveit_util_.currentJointState(start);
 
-    getPlan(start , demonstration_.joint_trajectory.points.back());
+    getPlan(start , goal_joint_);
     
     // refine();
 
@@ -92,7 +98,7 @@ void LFDPlanner::runExec()
 
 void LFDPlanner::refine()
 {
-    trajectory_msgs::JointTrajectoryPoint jtp = demonstration_.joint_trajectory.points.back();
+    trajectory_msgs::JointTrajectoryPoint jtp = goal_joint_;
     std::vector<double> zero_vel(jtp.positions.size(),0);
     jtp.velocities = zero_vel;
 

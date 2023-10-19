@@ -1,6 +1,7 @@
 # goal
 string name
 float64 duration
+trajectory_msgs/JointTrajectoryPoint goal_joint
 bool train
 bool visualize
 bool execute

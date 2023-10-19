@@ -37,7 +37,9 @@ void LFDPipeline::executeCBLFDPipeline(const lfd_interface::LFDPipelineGoalConst
     {
         for (size_t i = 0; i < demo_count; i++)
         {
-            lfd_planner_.init(goal->name + std::to_string(i), goal->duration);
+            lfd_planner_.init(goal->name + std::to_string(i),
+                            goal->goal_joint,
+                            goal->duration);
             lfd_planner_.runViz();
         }
     }
@@ -45,7 +47,9 @@ void LFDPipeline::executeCBLFDPipeline(const lfd_interface::LFDPipelineGoalConst
     {
         for (size_t i = 0; i < demo_count; i++)
         {
-            lfd_planner_.init(goal->name + std::to_string(i), goal->duration);
+            lfd_planner_.init(goal->name + std::to_string(i),
+                            goal->goal_joint,
+                            goal->duration);
             lfd_planner_.runExec();
         }
     }
@@ -53,7 +57,9 @@ void LFDPipeline::executeCBLFDPipeline(const lfd_interface::LFDPipelineGoalConst
     {
         for (size_t i = 0; i < demo_count; i++)
         {
-            lfd_planner_.init(goal->name + std::to_string(i), goal->duration);
+            lfd_planner_.init(goal->name + std::to_string(i),
+                            goal->goal_joint,
+                            goal->duration);
             lfd_planner_.visualizePlannedTrajectory();
             lfd_controller_.runControl(lfd_planner_.fetchPlanMetaData());
         }
