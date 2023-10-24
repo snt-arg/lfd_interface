@@ -1,5 +1,4 @@
 
-
 import rospy
 import actionlib
 
@@ -43,7 +42,4 @@ class DMPProgram(object):
     def demo_goal_joint(self):
         demonstration = self._fetch_demo()
         return demonstration.joint_trajectory.points[-1]
-
-    def demo_goal_pose(self):
-        joint = self.demo_goal_joint()
-        # TO DO
+    
