@@ -3,19 +3,40 @@
 import rospy
 
 from lfd_program.dmp import DMPProgram
+from lfd_program.moveit import MoveitProgram
+
+from trajectory_msgs.msg import JointTrajectoryPoint
 
 from lfd_program.util.fk import FK
+
+def test_dmp_program():
+    dmp_prog = DMPProgram("smoothpicknplace")
+    dmp_prog.train()
+    rospy.loginfo(dmp_prog.demo_goal_joint())
+    dmp_prog.visualize()
+
+def test_fk():
+    fk = FK("fr3_hand_tcp", "fr3_link0")
+    jtp = JointTrajectoryPoint()
+    rospy.sleep(1)
+    jtp.positions = fk.last_js.position
+    print(fk.get_pose(jtp))
+
+def test_moveit_program():
+    dmp_prog = DMPProgram("smoothpicknplace")
+    joint = dmp_prog.demo_goal_joint()
+    fk = FK("fr3_hand_tcp", "fr3_link0")
+    pose = fk.get_pose(joint)
+    moveit_prog = MoveitProgram()
+    # moveit_prog.plan_joint(joint)
+    moveit_prog.plan_pose(pose.pose,joint)
 
 if __name__ == "__main__":
 
     rospy.init_node("lfd_program", anonymous=False)
 
-    # dmp_prog = DMPProgram("smoothpicknplace")
-    # dmp_prog.train()
-    # rospy.loginfo(dmp_prog.demo_goal_joint())
-    # dmp_prog.visualize()
-
-    fk = FK("fr3_hand_tcp", "fr3_link0")
-    print(fk.get_current_fk_pose())
+    test_moveit_program()
+    # test_dmp_program()
+    # test_fk()
 
     rospy.spin() 
