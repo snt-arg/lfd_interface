@@ -4,6 +4,8 @@ from moveit_msgs.srv import GetPositionFKRequest
 from moveit_msgs.srv import GetPositionFKResponse
 from sensor_msgs.msg import JointState
 
+from trajectory_msgs.msg import JointTrajectoryPoint
+
 
 class FK(object):
     def __init__(self, fk_link, frame_id):
@@ -52,7 +54,7 @@ class FK(object):
 
         req = GetPositionFKRequest()
         req.header.frame_id = frame_id
-        req.fk_link_names = [self.fk_link]
+        req.fk_link_names = [fk_link]
         req.robot_state.joint_state = joint_state
         try:
             resp = self.fk_srv.call(req)
@@ -62,3 +64,14 @@ class FK(object):
             resp = GetPositionFKResponse()
             resp.error_code = 99999  # Failure
             return resp
+        
+    def get_pose(self, joint_position: JointTrajectoryPoint):
+        while not rospy.is_shutdown() and self.last_js is None:
+            rospy.sleep(0.1)
+        joint_state = self.last_js
+        num_j = len(joint_position.positions)
+        joint_state.position = joint_position.positions + joint_state.position[num_j:]
+        resp = self.get_fk(joint_state)
+        if len(resp.pose_stamped) >= 1:
+            return resp.pose_stamped[0]
+        return None
