@@ -1,0 +1,44 @@
+<launch>
+    <arg name="robot_group" default="fr3" />
+    <arg name="camera" default="true" />
+
+    <group if="$(eval robot_group == 'fr3')">
+
+        <include file="$(find lfd_smoothing)/launch/ik_solver.launch">
+            <arg name="robot_type" value="fr3" />
+        </include>
+
+        <include file="$(find lfd_interface)/launch/util.launch">
+            <arg name="config" value="fr3_hand" />
+        </include>
+
+        <include file="$(find lfd_interface)/launch/lfd_dmp_baseline.launch">
+            <arg name="config" value="fr3" />
+            <arg name="dmp_method" value="dmpbbo" />
+        </include>
+
+    </group>
+
+    <group if="$(eval robot_group == 'yumi')">
+
+        <include file="$(find lfd_smoothing)/launch/ik_solver.launch">
+            <arg name="robot_type" value="yumi" />
+        </include>
+
+        <include file="$(find lfd_interface)/launch/util.launch">
+            <arg name="config" value="yumi" />
+        </include>
+
+        <include file="$(find lfd_interface)/launch/lfd_dmp_baseline.launch">
+            <arg name="config" value="yumi" />
+            <arg name="dmp_method" value="dmpbbo" />
+        </include>
+
+    </group>
+
+    <group if="$(arg  camera)">
+        <include file="$(find lfd_interface)/launch/camera.launch">
+            <!-- Add any required arguments for camera.launch here if needed -->
+        </include>
+    </group>
+</launch>
