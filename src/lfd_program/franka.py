@@ -8,7 +8,7 @@ from franka_gripper.msg import MoveAction, MoveGoal, GraspAction, GraspGoal
 class FrankaProgram(object):
 
     def __init__(self):
-        self.ac_move = actionlib.SimpleActionClient('/franka_gripper/gripper_action', MoveAction)
+        self.ac_move = actionlib.SimpleActionClient('/franka_gripper/move', MoveAction)
         self.ac_grasp = actionlib.SimpleActionClient('/franka_gripper/grasp', GraspAction)
         self.ac_move.wait_for_server()
 
