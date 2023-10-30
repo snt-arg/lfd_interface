@@ -65,12 +65,7 @@ class FK(object):
             resp.error_code = 99999  # Failure
             return resp
         
-    def get_pose(self, joint_position: JointTrajectoryPoint):
-        while not rospy.is_shutdown() and self.last_js is None:
-            rospy.sleep(0.1)
-        joint_state = self.last_js
-        num_j = len(joint_position.positions)
-        joint_state.position = joint_position.positions + joint_state.position[num_j:]
+    def get_pose(self, joint_state):
         resp = self.get_fk(joint_state)
         if len(resp.pose_stamped) >= 1:
             return resp.pose_stamped[0]
