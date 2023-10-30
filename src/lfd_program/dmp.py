@@ -3,6 +3,7 @@ import rospy
 import actionlib
 
 from trajectory_msgs.msg import JointTrajectoryPoint
+from sensor_msgs.msg import JointState
 
 from lfd_interface.msg import LFDPipelineAction, LFDPipelineGoal
 from lfd_interface.srv import GetDemonstration
@@ -40,6 +41,9 @@ class DMPProgram(object):
         return resp.Demonstration
     
     def demo_goal_joint(self):
+        goal_state = JointState()
         demonstration = self._fetch_demo()
-        return demonstration.joint_trajectory.points[-1]
+        goal_state.name = demonstration.joint_trajectory.joint_names
+        goal_state.position = demonstration.joint_trajectory.points[-1].positions
+        return goal_state
     
