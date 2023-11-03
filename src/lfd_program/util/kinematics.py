@@ -4,6 +4,8 @@ from moveit_msgs.srv import GetPositionFKRequest
 from moveit_msgs.srv import GetPositionFKResponse
 from sensor_msgs.msg import JointState
 
+from lfd_smoothing.srv import IKService, IKServiceRequest
+
 from trajectory_msgs.msg import JointTrajectoryPoint
 
 
@@ -68,5 +70,24 @@ class FK(object):
     def get_pose(self, joint_state):
         resp = self.get_fk(joint_state)
         if len(resp.pose_stamped) >= 1:
-            return resp.pose_stamped[0]
+            return resp.pose_stamped[0].pose
         return None
+
+
+class IK(object):
+
+    def __init__(self):
+        self.service_name = '/ik_service'
+        rospy.wait_for_service(self.service_name)
+        self.ik_service = rospy.ServiceProxy(self.service_name, IKService)
+    
+    def request_ik(self, end_effector_pose, q_init):
+        try:
+            request = IKServiceRequest()
+            request.end_effector_pose = end_effector_pose
+            request.q_init = q_init
+            response = self.ik_service(request)
+            return response.q_out
+        except rospy.ServiceException as e:
+            rospy.logerr("Service call failed: %s", str(e))
+            return None    
