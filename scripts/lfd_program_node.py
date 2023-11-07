@@ -8,27 +8,30 @@ from lfd_program.camera import CameraProgram
 
 from trajectory_msgs.msg import JointTrajectoryPoint
 
-from lfd_program.util.fk import FK
+from lfd_program.util.kinematics import FK
 
 def test_dmp_program():
     dmp_prog = DMPProgram("smoothpicknplace")
-    dmp_prog.train()
-    rospy.loginfo(dmp_prog.demo_goal_joint())
-    dmp_prog.visualize()
+    # dmp_prog.train()
+    demo = dmp_prog.demo_goal_joint()
+    rospy.loginfo(demo.joint_trajectory.joint_names)
+    # dmp_prog.visualize()
 
 def test_fk():
+    dmp_prog = DMPProgram("smoothpicknplace")
+    state = dmp_prog.demo_goal_joint()
     fk = FK("fr3_hand_tcp", "fr3_link0")
-    jtp = JointTrajectoryPoint()
-    rospy.sleep(1)
-    jtp.positions = fk.last_js.position
-    print(fk.get_pose(jtp))
+    # jtp = JointTrajectoryPoint()
+    # rospy.sleep(1)
+    # jtp.positions = fk.last_js.position
+    print(fk.get_pose(state))
 
 def get_sample_joint_pose():
-    dmp_prog = DMPProgram("smoothpicknplace")
+    dmp_prog = DMPProgram("smoothpicknplaceee")
     joint = dmp_prog.demo_goal_joint()
     fk = FK("fr3_hand_tcp", "fr3_link0")
     pose = fk.get_pose(joint)
-    return joint,pose.pose    
+    return joint,pose   
 
 def test_moveit_program():
     joint,pose = get_sample_joint_pose()
