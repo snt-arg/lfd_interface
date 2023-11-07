@@ -73,9 +73,9 @@ class ProgramRunner:
             pose = self.fk.get_pose(pos)
             
             goal_pos = self._get_camera_pos(target, pose, pos)
-            dmp.execute(goal_joint=goal_pos, duration_scale=2)
+            dmp.visualize(goal_joint=goal_pos, duration_scale=10)
         else:
-            dmp.execute(duration_scale=2)
+            dmp.visualize(duration_scale=10)
 
     def _get_camera_pos(self, job_name : str, pose_template : Pose, pos_init: JointState):
         pose = self.camera.trigger(job_name, pose_template)
@@ -136,8 +136,10 @@ if __name__ == "__main__":
 
     runner = ProgramRunner()
     runner.gripper("open")
-    runner.move("nomatter", "smoothpicknplaceee")
+    runner.move("nomatter", "smoothfrpick")
     runner.gripper("close", True)
+    runner.move(None, "smoothfrplace")
+    runner.gripper("open")
 
 
     # rospy.spin() 
