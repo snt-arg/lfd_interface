@@ -18,14 +18,14 @@ class CameraActionServer:
         self._as = actionlib.SimpleActionServer(self.action_name, 
                                                 CameraAction, execute_cb=self.execute_cb, 
                                                 auto_start = False)
-        self.cam.connect()
+        # self.cam.connect()
         self._as.start()
     
 
     def execute_cb(self, goal : CameraGoal):
-        # output = b'Welcome to In-Sight(tm)  8502P Session 0\r\nUser: Password: User Logged In\r\n1\r\n1\r\n(28.9,24.2) 153.2\xb0 score = 70.2\r\n'
-        # coord = cam._extract_pos(output)
-        coord = self.cam.read(goal.name)
+        output = b'Welcome to In-Sight(tm)  8502P Session 0\r\nUser: Password: User Logged In\r\n1\r\n1\r\n(28.9,24.2) 153.2\xb0 score = 70.2\r\n'
+        coord = cam._extract_pos(output)
+        # coord = self.cam.read(goal.name)
         pose = self.calib.transform(coord,goal.pose_template)
 
         self._result.success = True

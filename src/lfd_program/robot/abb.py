@@ -10,6 +10,7 @@ from abb_robot_msgs.msg import *
 from abb_rapid_sm_addin_msgs.srv import *
 from abb_rapid_sm_addin_msgs.msg import RuntimeState
 
+from lfd_program.core.robot import RobotProgram
 
 class RapidRunner():
 
@@ -66,3 +67,23 @@ class EGMRunner():
         rospy.wait_for_service("/yumi/rws/sm_addin/stop_egm")
         s_stop_egm_joint = rospy.ServiceProxy("/yumi/rws/sm_addin/stop_egm", TriggerWithResultCode)
         s_stop_egm_joint()
+
+
+class YumiProgram(RobotProgram):
+
+    def __init__(self):
+        self.rapid_runner = RapidRunner()
+        self.egm_runner = EGMRunner()
+
+    def gripper_open(self):
+        #TODO
+        pass
+    
+    def gripper_grasp(self):
+        #TODO
+        pass
+
+    def move(self, move_method, *args, **kwargs):
+        # self.egm_runner.activate_egm()
+        super().move(move_method, *args, **kwargs)
+        # self.egm_runner.deactivate_egm()

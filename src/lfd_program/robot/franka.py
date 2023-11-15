@@ -3,9 +3,10 @@
 import rospy
 import actionlib
 
+from lfd_program.core.robot import RobotProgram
 from franka_gripper.msg import MoveAction, MoveGoal, GraspAction, GraspGoal
 
-class FrankaProgram(object):
+class FrankaProgram(RobotProgram):
 
     def __init__(self):
         self.ac_move = actionlib.SimpleActionClient('/franka_gripper/move', MoveAction)

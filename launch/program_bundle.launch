@@ -19,18 +19,35 @@
 
     </group>
 
-    <group if="$(eval robot_group == 'yumi')">
+    <group if="$(eval robot_group == 'yumi_l')">
 
         <include file="$(find lfd_smoothing)/launch/ik_solver.launch">
-            <arg name="robot_type" value="yumi" />
+            <arg name="robot_type" value="yumi_l" />
         </include>
 
         <include file="$(find lfd_interface)/launch/util.launch">
-            <arg name="config" value="yumi" />
+            <arg name="config" value="yumi_l" />
         </include>
 
         <include file="$(find lfd_interface)/launch/lfd_dmp_baseline.launch">
-            <arg name="config" value="yumi" />
+            <arg name="config" value="yumi_l" />
+            <arg name="dmp_method" value="dmpbbo" />
+        </include>
+
+    </group>
+
+    <group if="$(eval robot_group == 'yumi_r')">
+
+        <include file="$(find lfd_smoothing)/launch/ik_solver.launch">
+            <arg name="robot_type" value="yumi_r" />
+        </include>
+
+        <include file="$(find lfd_interface)/launch/util.launch">
+            <arg name="config" value="yumi_r" />
+        </include>
+
+        <include file="$(find lfd_interface)/launch/lfd_dmp_baseline.launch">
+            <arg name="config" value="yumi_r" />
             <arg name="dmp_method" value="dmpbbo" />
         </include>
 

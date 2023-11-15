@@ -2,55 +2,32 @@
 
 import rospy
 
-from lfd_program.dmp import DMPProgram
-from lfd_program.moveit import MoveitProgram
-from lfd_program.camera import CameraProgram
+from lfd_program.runner import ProgramRunner
 
-from trajectory_msgs.msg import JointTrajectoryPoint
-
-from lfd_program.util.kinematics import FK
-
-def test_dmp_program():
-    dmp_prog = DMPProgram("smoothpicknplace")
-    # dmp_prog.train()
-    demo = dmp_prog.demo_goal_joint()
-    rospy.loginfo(demo.joint_trajectory.joint_names)
-    # dmp_prog.visualize()
-
-def test_fk():
-    dmp_prog = DMPProgram("smoothpicknplace")
-    state = dmp_prog.demo_goal_joint()
-    fk = FK("fr3_hand_tcp", "fr3_link0")
-    # jtp = JointTrajectoryPoint()
-    # rospy.sleep(1)
-    # jtp.positions = fk.last_js.position
-    print(fk.get_pose(state))
-
-def get_sample_joint_pose():
-    dmp_prog = DMPProgram("smoothpicknplaceee")
-    joint = dmp_prog.demo_goal_joint()
-    fk = FK("fr3_hand_tcp", "fr3_link0")
-    pose = fk.get_pose(joint)
-    return joint,pose   
-
-def test_moveit_program():
-    joint,pose = get_sample_joint_pose()
-    moveit_prog = MoveitProgram()
-    # moveit_prog.plan_joint(joint)
-    moveit_prog.plan_pose(pose.pose,joint)
-
-def test_camera_program():
-    joint, pose = get_sample_joint_pose()
-    camera_prog = CameraProgram()
-    print(camera_prog.trigger("nomatter", pose))
 
 if __name__ == "__main__":
 
-    rospy.init_node("lfd_program", anonymous=False)
+    rospy.init_node("lfd_program_node", anonymous=False)
 
-    # test_moveit_program()
-    # test_dmp_program()
-    # test_fk()
-    test_camera_program()
+    robot = "yumi_r"
+    camera = True
 
-    rospy.spin() 
+    if robot=="yumi_r":
+        runner = ProgramRunner(robot_type="yumi_r", camera=camera)
+        runner.move("nomatter", "smoothyrtest")
+    elif robot=="yumi_l":
+        runner = ProgramRunner(robot_type="yumi_l", camera=camera)
+        runner.move(None, "smoothyltest")
+    elif robot=="fr3":
+        runner = ProgramRunner(camera=camera)
+        runner._dmp_train("smoothfrpick")
+        runner._dmp_train("smoothfrplace")
+
+        runner.gripper("open")
+        runner.move("nomatter", "smoothfrpick")
+        runner.gripper("close", True)
+        runner.move(None, "smoothfrplace")
+        runner.gripper("open")
+
+
+    # rospy.spin() 

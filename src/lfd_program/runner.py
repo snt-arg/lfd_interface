@@ -1,11 +1,10 @@
-#!/usr/bin/env python3
 
-import rospy
 
-from lfd_program.franka import FrankaProgram
-from lfd_program.dmp import DMPProgram
-from lfd_program.moveit import MoveitProgram
-from lfd_program.camera import CameraProgram
+from lfd_program.robot.franka import FrankaProgram
+from lfd_program.robot.abb import YumiProgram
+from lfd_program.core.dmp import DMPProgram
+from lfd_program.core.moveit import MoveitProgram
+from lfd_program.core.camera import CameraProgram
 
 from trajectory_msgs.msg import JointTrajectoryPoint
 from geometry_msgs.msg import Pose
@@ -13,21 +12,30 @@ from sensor_msgs.msg import JointState
 
 from lfd_program.util.kinematics import FK, IK
 
+
 class ProgramRunner:
 
-    def __init__(self, robot_type = "fr3") -> None:
+    def __init__(self, robot_type = "fr3", camera=True) -> None:
         
-        self.camera = CameraProgram()
+        if camera:
+            self.camera = CameraProgram()
+        
         self.moveit = MoveitProgram()
         
         if robot_type == "fr3":
             self.fk = FK("fr3_hand_tcp", "fr3_link0")
             self.ik = IK()
             self.robot = FrankaProgram()
-        elif robot_type == "yumileft":
-            pass
-        elif robot_type == "yumiright":
-            pass
+
+        elif robot_type == "yumi_l":
+            self.fk = FK("yumi_link_7_l", "yumi_base_link")
+            self.ik = IK()
+            self.robot = YumiProgram()
+            
+        elif robot_type == "yumi_r":
+            self.fk = FK("yumi_link_7_r", "yumi_base_link")
+            self.ik = IK()
+            self.robot = YumiProgram()
         
         self.dmps = {}
     
@@ -73,9 +81,9 @@ class ProgramRunner:
             pose = self.fk.get_pose(pos)
             
             goal_pos = self._get_camera_pos(target, pose, pos)
-            dmp.visualize(goal_joint=goal_pos, duration_scale=3)
+            self.robot.move(dmp.visualize, goal_joint=goal_pos, duration_scale=3)
         else:
-            dmp.visualize(duration_scale=3)
+            self.robot.move(dmp.visualize, duration_scale=3)
 
     def _get_camera_pos(self, job_name : str, pose_template : Pose, pos_init: JointState):
         pose = self.camera.trigger(job_name, pose_template)
@@ -103,47 +111,3 @@ class ProgramRunner:
             #TODO Code to close the gripper without grasping
             pass
     
-
-
-    
-
-if __name__ == "__main__":
-
-    rospy.init_node("lfd_program_franka", anonymous=False)
-
-    # # initializations
-    # fk = FK("fr3_hand_tcp", "fr3_link0")
-    # ik = IK()
-    # camera = CameraProgram()
-    # moveit = MoveitProgram()
-    # franka = FrankaProgram()
-
-
-
-    # # Assume the robot is in home pos
-    # dmp = DMPProgram("smoothpicknplaceee")
-    # dmp.train()
-    # franka.gripper_open()
-    # goal_joint = dmp.demo_goal_joint()
-    # goal_pose = fk.get_pose(goal_joint)
-    # object_pose = camera.trigger("nomatter",goal_pose)
-    # object_joint = ik.request_ik(object_pose, JointTrajectoryPoint(positions=goal_joint.position))
-    # # object_joint = ik.request_ik(goal_pose, JointTrajectoryPoint(positions=[0,0,0,0,0,0,0]))
-    # # moveit.plan_joint(object_joint)
-
-    # dmp.execute(object_joint, 2)
-    # franka.gripper_grasp()
-
-    runner = ProgramRunner()
-
-    runner._dmp_train("smoothfrpick")
-    runner._dmp_train("smoothfrplace")
-
-    runner.gripper("open")
-    runner.move("nomatter", "smoothfrpick")
-    runner.gripper("close", True)
-    runner.move(None, "smoothfrplace")
-    runner.gripper("open")
-
-
-    # rospy.spin() 
