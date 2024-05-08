@@ -66,12 +66,17 @@ print(f"Transformed coordinate is: {transformed_coordinate}")
 
 #%%
 
-ref = [0.4027422, 0.39740265]
-alpha =  1.57370049
+# # Ring coordinates
+# ref = [0.4027422, 0.39740265]
+# alpha =  1.57370049
+
+# Screw coordinates
+ref = [0.21145711, 0.43231239]
+alpha =  1.56739902
 
 matrix = calculate_transformation(ref[0], ref[1], alpha)
 
 
-coordinate = (-7.9, -6.6)
+coordinate = (-72.6, -31.8)
 transformed_coordinate = apply_transformation(matrix, coordinate)
 print(f"Transformed coordinate is: {transformed_coordinate}")

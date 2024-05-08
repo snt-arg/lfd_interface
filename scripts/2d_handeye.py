@@ -28,7 +28,7 @@ prog.AddConstraint(alpha[0]<=pi)
 
 #%%
 
-with open('/home/abrk/catkin_ws/src/lfd/lfd_interface/config/camera/handeye_ring.yaml', 'r') as file:
+with open('/home/abrk/catkin_ws/src/lfd/lfd_interface/config/camera/handeye_screw.yaml', 'r') as file:
     data = yaml.safe_load(file)
 
 # Extract the coordinates from the loaded data
