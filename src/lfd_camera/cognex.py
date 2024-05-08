@@ -18,9 +18,12 @@ class Cognex:
         self.tn.write(telnet_user.encode('ascii'))
         telnet_password = self.password + "\r\n"
         self.tn.write(telnet_password.encode('ascii'))
+        print(self.read())
         # Logged in!
 
     def read(self, name = None):
+        self.tn.write(b"SJ0\r\n")
+        rospy.sleep(1.0)
         self.tn.write(b"SE8\r\n")
         rospy.sleep(0.5)
         self.tn.write(b"GVPattern_1.Result\r\n")
