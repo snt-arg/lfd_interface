@@ -1,6 +1,18 @@
-transformation_matrix:
-  - [ 0.0, 1.0,  0.2875]
-  - [-1.0, 0.0, -0.5618]
-  - [ 0.0, 0.0,     1.0]  
-camera_ip: "10.0.27.199"
-angle_offset: 0
+general:
+  camera_ip: "10.0.27.199"
+  
+screw:
+  id: 1
+  transformation_matrix:
+    - [0.0033973, -0.999994,  0.211457]
+    - [0.999994,  0.0033973,  0.432312]
+    - [0.0,       0.0,        1.0]  
+  angle_offset: 0
+
+ring:
+  id: 2
+  transformation_matrix:
+    - [-0.00290416, -0.999996,    0.402742]
+    - [0.999996,    -0.00290416,  0.397403]
+    - [0.0,         0.0,          1.0]  
+  angle_offset: 0

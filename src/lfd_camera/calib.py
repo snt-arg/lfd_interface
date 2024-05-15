@@ -8,9 +8,9 @@ from tf.transformations import quaternion_from_euler, quaternion_multiply
 
 class Calibration:
 
-    def __init__(self):
-        self.T = rospy.get_param("~transformation_matrix")
-        self.angle_offset = rospy.get_param("~angle_offset")
+    def __init__(self, tf_matrix, angle_offset):
+        self.T = tf_matrix
+        self.angle_offset = angle_offset
 
     def transform(self, coord, pose_template: Pose):
         """

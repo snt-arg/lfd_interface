@@ -7,10 +7,12 @@ import math
 
 class Cognex:
 
-    def __init__(self):
-        self.ip = rospy.get_param("~camera_ip")
+    def __init__(self, cam_config):
+        self.ip = cam_config.general["camera_ip"]
+        self.objects = cam_config.objects
         self.user = "admin"
         self.password = ""
+        self.current_job = None
 
     def connect(self):
         self.tn = telnetlib.Telnet(self.ip)
@@ -21,9 +23,16 @@ class Cognex:
         print(self.read())
         # Logged in!
 
-    def read(self, name = None):
-        self.tn.write(b"SJ0\r\n")
+    def switch_job(self, job_id):
+        self.tn.write(f"SJ{job_id}\r\n".encode('ascii'))
         rospy.sleep(1.0)
+    
+    def read(self, name):
+        if name is None:
+            raise ValueError("Name of object to read is required")
+        if self.current_job != name:
+            self.switch_job(self.objects[name]["job_id"])
+            self.current_job = name
         self.tn.write(b"SE8\r\n")
         rospy.sleep(0.5)
         self.tn.write(b"GVPattern_1.Result\r\n")
