@@ -15,11 +15,12 @@ from lfd_program.util.kinematics import FK, IK
 
 class ProgramRunner:
 
-    def __init__(self, robot_type = "fr3", camera=True) -> None:
+    def __init__(self, robot_type = "fr3", camera=True, duration_scale = 1) -> None:
         
         if camera:
             self.camera = CameraProgram()
         
+        self.duration_scale = duration_scale
         self.moveit = MoveitProgram()
         
         if robot_type == "fr3":
@@ -81,9 +82,9 @@ class ProgramRunner:
             pose = self.fk.get_pose(pos)
             
             goal_pos = self._get_camera_pos(target, pose, pos)
-            self.robot.move(dmp.visualize, goal_joint=goal_pos, duration_scale=3)
+            self.robot.move(dmp.visualize, goal_joint=goal_pos, duration_scale=self.duration_scale)
         else:
-            self.robot.move(dmp.visualize, duration_scale=3)
+            self.robot.move(dmp.visualize, duration_scale=self.duration_scale)
 
     def _get_camera_pos(self, job_name : str, pose_template : Pose, pos_init: JointState):
         pose = self.camera.trigger(job_name, pose_template)

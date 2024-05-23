@@ -9,17 +9,18 @@ if __name__ == "__main__":
 
     rospy.init_node("lfd_program_node", anonymous=False)
 
-    robot = "yumi_r"
+    robot = "yumi_l"
+    duration_scale = 1
     camera = True
 
     if robot=="yumi_r":
-        runner = ProgramRunner(robot_type="yumi_r", camera=camera)
+        runner = ProgramRunner(robot_type="yumi_r", camera=camera, duration_scale=duration_scale)
         runner.move("nomatter", "smoothyrtest")
     elif robot=="yumi_l":
-        runner = ProgramRunner(robot_type="yumi_l", camera=camera)
-        runner.move(None, "smoothyltest")
+        runner = ProgramRunner(robot_type="yumi_l", camera=camera, duration_scale=duration_scale)
+        runner.move("screw", "smoothylhometoscrew")
     elif robot=="fr3":
-        runner = ProgramRunner(camera=camera)
+        runner = ProgramRunner(camera=camera, duration_scale=duration_scale)
         runner._dmp_train("smoothfrpick")
         runner._dmp_train("smoothfrplace")
 
