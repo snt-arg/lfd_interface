@@ -2,7 +2,7 @@ general:
   camera_ip: "10.0.27.199"
   
 screw:
-  id: 1
+  id: 0
   transformation_matrix:
     - [0.0033973, -0.999994,  0.211457]
     - [0.999994,  0.0033973,  0.432312]
@@ -10,7 +10,7 @@ screw:
   angle_offset: 0
 
 ring:
-  id: 2
+  id: 1
   transformation_matrix:
     - [-0.00290416, -0.999996,    0.402742]
     - [0.999996,    -0.00290416,  0.397403]

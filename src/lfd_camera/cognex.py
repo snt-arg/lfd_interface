@@ -13,6 +13,7 @@ class Cognex:
         self.user = "admin"
         self.password = ""
         self.current_job = None
+        # print(self.objects)
 
     def connect(self):
         self.tn = telnetlib.Telnet(self.ip)
@@ -20,7 +21,7 @@ class Cognex:
         self.tn.write(telnet_user.encode('ascii'))
         telnet_password = self.password + "\r\n"
         self.tn.write(telnet_password.encode('ascii'))
-        print(self.read())
+        # print(self.read("ring"))
         # Logged in!
 
     def switch_job(self, job_id):
@@ -31,7 +32,7 @@ class Cognex:
         if name is None:
             raise ValueError("Name of object to read is required")
         if self.current_job != name:
-            self.switch_job(self.objects[name]["job_id"])
+            self.switch_job(self.objects[name]["id"])
             self.current_job = name
         self.tn.write(b"SE8\r\n")
         rospy.sleep(0.5)
