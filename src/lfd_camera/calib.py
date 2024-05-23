@@ -8,9 +8,15 @@ from tf.transformations import quaternion_from_euler, quaternion_multiply
 
 class Calibration:
 
-    def __init__(self, tf_matrix, angle_offset):
+    def __init__(self, tf_matrix, angle_offset, symmetry=None):
+        """
+        tf_matrix: 3x3 transformation matrix
+        angle_offset: angle offset in radians
+        symmetry: None, "half", "full"
+        """
         self.T = tf_matrix
         self.angle_offset = angle_offset
+        self.symmetry = symmetry
 
     def transform(self, coord, pose_template: Pose):
         """
@@ -61,11 +67,19 @@ class Calibration:
         """
         angle: radians
         """
-        max_rotation_angle = math.radians(90)
-        angle = math.atan2(math.sin(angle), math.cos(angle))
-        if abs(angle) > max_rotation_angle:
-            angle = angle + math.radians(180)
+        if self.symmetry is None:
             angle = math.atan2(math.sin(angle), math.cos(angle))
+
+        elif self.symmetry == "half":
+            max_rotation_angle = math.radians(90)
+            angle = math.atan2(math.sin(angle), math.cos(angle))
+            if abs(angle) > max_rotation_angle:
+                angle = angle + math.radians(180)
+                angle = math.atan2(math.sin(angle), math.cos(angle))
+
+        elif self.symmetry == "full":
+            angle = 0
+            
         return angle
 
     

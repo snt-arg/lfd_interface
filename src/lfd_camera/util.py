@@ -49,6 +49,7 @@ class CameraConfig:
     def _add_calib(self):
         for object_name, object_config in self.objects.items():
             tf_matrix = object_config["transformation_matrix"]
-            angle_offset = object_config["angle_offset"]
-            self.objects[object_name]["calib"] = Calibration(tf_matrix, angle_offset)
+            angle_offset = object_config.get("angle_offset", 0)
+            symmetry = object_config.get("symmetry", None)
+            self.objects[object_name]["calib"] = Calibration(tf_matrix, angle_offset, symmetry)
    
