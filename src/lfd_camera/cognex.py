@@ -29,9 +29,9 @@ class Cognex:
         rospy.sleep(1.0)
     
     def read(self, name):
-        if name is None:
-            raise ValueError("Name of object to read is required")
-        if self.current_job != name:
+        # if name is None:
+        #     raise ValueError("Name of object to read is required")
+        if self.current_job != name and name is not None:
             self.switch_job(self.objects[name]["id"])
             self.current_job = name
         self.tn.write(b"SE8\r\n")

@@ -1,0 +1,8 @@
+<launch>
+    <arg name="config_name" default="handeye_test"/>
+    <arg name="config_path" value="$(find lfd_interface)/config/camera/$(arg config_name).yaml"/>
+
+    <node name="handeye_node" pkg="lfd_interface" type="handeye_node.py" output="screen">
+        <param name="config_path" value="$(arg config_path)" />
+    </node>
+</launch>

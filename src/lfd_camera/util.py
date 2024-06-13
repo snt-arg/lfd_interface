@@ -1,6 +1,8 @@
 import rospy
 import actionlib
 
+from geometry_msgs.msg import Pose
+
 from lfd_camera.calib import Calibration
 
 from lfd_interface.msg import CameraAction, CameraGoal, CameraResult
@@ -22,10 +24,17 @@ class CameraActionServer:
 
     def execute_cb(self, goal : CameraGoal):
         # output = b'Welcome to In-Sight(tm)  8502P Session 0\r\nUser: Password: User Logged In\r\n1\r\n1\r\n(28.9,24.2) 153.2\xb0 score = 70.2\r\n'
-        # coord = cam._extract_pos(output)
-        coord = self.cam.read(goal.name)
-        calib = self.objects[goal.name]["calib"]
-        pose = calib.transform(coord,goal.pose_template)
+        # coord = self.cam._extract_pos(output)
+
+        if goal.name != "" and goal.pose_template != Pose():
+            coord = self.cam.read(goal.name)
+            calib = self.objects[goal.name]["calib"]
+            pose = calib.transform(coord,goal.pose_template)
+        else:
+            coord = self.cam.read(None)
+            pose = Pose()
+            pose.position.x = coord[0]
+            pose.position.y = coord[1]
 
         self._result.success = True
         self._result.pose = pose
