@@ -31,12 +31,12 @@ class ProgramRunner:
         elif robot_type == "yumi_l":
             self.fk = FK("yumi_link_7_l", "yumi_base_link")
             self.ik = IK()
-            self.robot = YumiProgram()
+            self.robot = YumiProgram(robot_type)
             
         elif robot_type == "yumi_r":
             self.fk = FK("yumi_link_7_r", "yumi_base_link")
             self.ik = IK()
-            self.robot = YumiProgram()
+            self.robot = YumiProgram(robot_type)
         
         self.dmps = {}
     
@@ -95,20 +95,9 @@ class ProgramRunner:
         self.dmps[demo_name] = DMPProgram(demo_name)
         self.dmps[demo_name].train()
 
-    def gripper(self, target : str, grasp = False):
+    def gripper(self, command: str, arg : str):
         """
-        target = open/close
-        grasp = true if it needs to grasp sth,
-                false if it needs to just move
+        command = grasp/moveto
+        arg = grasp: open/close, moveto: gripper width
         """
-        if target == "open" and grasp:
-            #TODO Code to open the gripper and grasp something
-            pass
-        elif target == "open" and not grasp:
-            self.robot.gripper_open()
-        elif target == "close" and grasp:
-            self.robot.gripper_grasp()
-        elif target == "close" and not grasp:
-            #TODO Code to close the gripper without grasping
-            pass
-    
+        self.robot.gripper(command, arg)
