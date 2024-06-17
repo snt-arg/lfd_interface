@@ -1,0 +1,11 @@
+<launch>
+    <arg name="robot" default="yumi_l" />
+    <arg name="duration_scale" default="5" />
+    <arg name="camera" default="false" />
+
+    <node name="lfd_program_node" pkg="lfd_interface" type="lfd_program_node.py" output="screen">
+        <param name="robot" value="$(arg robot)" />
+        <param name="duration_scale" value="$(arg duration_scale)" />
+        <param name="camera" value="$(arg camera)" />
+    </node>
+</launch>
