@@ -35,6 +35,10 @@ class StateMachineRunner():
         set_rapid_routine = rospy.ServiceProxy('/yumi/rws/sm_addin/set_rapid_routine', SetRAPIDRoutine)
         run_rapid_routine = rospy.ServiceProxy('/yumi/rws/sm_addin/run_rapid_routine', TriggerWithResultCode)
         #
+        if self.egm_running:
+            self.deactivate_egm()
+            rospy.sleep(0.5)
+            
         if l_routine is not None:
             set_rapid_routine(task="T_ROB_L", routine=l_routine)
         if r_routine is not None:
@@ -86,7 +90,7 @@ class YumiProgram(RobotProgram):
         self.sm_runner = StateMachineRunner()
 
     def gripper_moveto(self, arg):
-        self.sm_runner.set_sg_command(task=self.robot_arm, command=SetSGCommandRequest.SG_COMMAND_MOVE_TO, target_pos=arg)
+        self.sm_runner.set_sg_command(task=self.robot_arm, command=SetSGCommandRequest.SG_COMMAND_MOVE_TO, target_pos=float(arg))
         rospy.sleep(0.5)
         self.sm_runner.run_sg_routine()
 
