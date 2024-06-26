@@ -18,12 +18,38 @@ if __name__ == "__main__":
         runner.move("nomatter", "smoothyrtest")
     elif robot=="yumi_l":
         runner = ProgramRunner(robot_type="yumi_l", camera=camera, duration_scale=duration_scale)
+        
+        # runner.robot.sm_runner.run_rapid(r_routine="movecone", nonblocking=False)
 
+        # runner.robot.sm_runner.run_rapid(r_routine="mountcone", nonblocking=False)
+        runner.robot.sm_runner.run_rapid(r_routine="mountring", nonblocking=False)
+
+        # runner.gripper("grasp", "open")
+
+
+
+        # runner.gripper("moveto", "10.0")
+        # runner.move("screw", "smoothylhometoscrew")
         # runner.gripper("grasp", "close")
 
-        # runner.move("screw", "smoothylhometoscrew")
+        # runner.move(None, "smoothylrecoveryone")
+        # runner.gripper("moveto", "10.0")
+        # runner.move("screw", "smoothylrecoverytwo")
+        # runner.gripper("grasp", "close")
+
+
         # runner.move(None, "smoothylscrewmount")
+        # runner.gripper("grasp", "open")
+        # runner.gripper("grasp", "close")
         # runner.move("ring", "smoothylscrewtoring")
+        # runner.gripper("moveto", "1.5")
+
+        # runner.robot.sm_runner.run_rapid(r_routine="movecone", nonblocking=False)
+      
+        # runner.move(None, "smoothylringmount")
+        # runner.gripper("grasp", "close")
+
+        # runner.robot.sm_runner.run_rapid(r_routine="mountcone", nonblocking=False)
 
         # runner.move("ring", "smoothylringtest")
 
