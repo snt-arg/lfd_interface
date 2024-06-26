@@ -1,6 +1,8 @@
 <launch>
     <arg name="robot_group" default="fr3" />
     <arg name="camera" default="true" />
+    <arg name="training_mode" default="bspline" doc="bspline, lwr, rbfn, wls"/>
+    <arg name="num_kernels" default="10"/>    
 
     <group if="$(eval robot_group == 'fr3')">
 
@@ -15,6 +17,8 @@
         <include file="$(find lfd_interface)/launch/lfd_dmp_baseline.launch">
             <arg name="config" value="fr3" />
             <arg name="dmp_method" value="dmpbbo" />
+            <arg name="training_mode" value="$(arg training_mode)"/>
+            <arg name="num_kernels" value="$(arg num_kernels)"/>
         </include>
 
     </group>
@@ -32,6 +36,8 @@
         <include file="$(find lfd_interface)/launch/lfd_dmp_baseline.launch">
             <arg name="config" value="yumi_l" />
             <arg name="dmp_method" value="dmpbbo" />
+            <arg name="training_mode" value="$(arg training_mode)"/>
+            <arg name="num_kernels" value="$(arg num_kernels)"/>
         </include>
 
     </group>
@@ -49,6 +55,8 @@
         <include file="$(find lfd_interface)/launch/lfd_dmp_baseline.launch">
             <arg name="config" value="yumi_r" />
             <arg name="dmp_method" value="dmpbbo" />
+            <arg name="training_mode" value="$(arg training_mode)"/>
+            <arg name="num_kernels" value="$(arg num_kernels)"/>
         </include>
 
     </group>

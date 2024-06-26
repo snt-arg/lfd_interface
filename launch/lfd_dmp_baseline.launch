@@ -4,9 +4,14 @@
 
     <arg name="config_file" value="$(find lfd_interface)/config/demonstrations/$(arg config).yaml"/>
     <arg name="dmp_method" default="dmpbbo"/>
+    
+    <arg name="training_mode" default="bspline" doc="bspline, lwr, rbfn, wls"/>
+    <arg name="num_kernels" default="10"/>
 
     <include file="$(find lfd_dmp)/launch/dmp_bringup.launch">
         <arg name="dmp_method" value="$(arg dmp_method)"/>
+        <arg name="training_mode" value="$(arg training_mode)"/>
+        <arg name="num_kernels" value="$(arg num_kernels)"/>
     </include>
 
     <include file="$(find lfd_interface)/launch/lfd_storage.launch"/>
