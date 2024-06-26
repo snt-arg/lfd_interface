@@ -1,0 +1,7 @@
+<launch>
+    <arg name="demo_name" default="smoothfrpick" />
+
+    <node name="lfd_move_to_start" pkg="lfd_interface" type="lfd_move_to_start.py" output="screen">
+        <param name="demo_name" value="$(arg demo_name)" />
+    </node>
+</launch>
