@@ -52,7 +52,7 @@ void LFDPlanner::getPlan(trajectory_msgs::JointTrajectoryPoint start,
 void LFDPlanner::visualizePlannedTrajectory()
 {
     
-    moveit_util_.changeVisualizationColor(rviz_visual_tools::DARK_GREY);
+    moveit_util_.changeVisualizationColor(rviz_visual_tools::LIME_GREEN);
     moveit_util_.visualizeJointTrajectory(demonstration_.joint_trajectory);
 
     moveit_util_.getVisualTools()->prompt("press next to get the plan and visualize the planned trajectory");
