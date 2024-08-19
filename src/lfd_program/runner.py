@@ -29,12 +29,12 @@ class ProgramRunner:
             self.robot = FrankaProgram()
 
         elif robot_type == "yumi_l":
-            self.fk = FK("yumi_link_7_l", "yumi_base_link")
+            self.fk = FK("gripper_l_tip", "yumi_base_link")
             self.ik = IK()
             self.robot = YumiProgram(robot_type)
             
         elif robot_type == "yumi_r":
-            self.fk = FK("yumi_link_7_r", "yumi_base_link")
+            self.fk = FK("gripper_r_tip", "yumi_base_link")
             self.ik = IK()
             self.robot = YumiProgram(robot_type)
         
