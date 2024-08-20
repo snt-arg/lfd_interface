@@ -1,0 +1,9 @@
+<launch>
+    <arg name="demo_name" default="smoothfrpick" />
+
+    <include file="$(find lfd_interface)/launch/lfd_storage.launch"/>
+
+    <node name="lfd_reverse_demo" pkg="lfd_interface" type="lfd_reverse_demo.py" output="screen">
+        <param name="demo_name" value="$(arg demo_name)" />
+    </node>
+</launch>
