@@ -27,7 +27,17 @@ class Cognex:
     def switch_job(self, job_id):
         self.tn.write(f"SJ{job_id}\r\n".encode('ascii'))
         rospy.sleep(1.0)
-    
+
+    def read_temp(self, name):
+        self.tn.write(b"SE8\r\n")
+        rospy.sleep(0.5)
+        self.tn.write(b"GVDadayeh\r\n")
+        rospy.sleep(0.5)
+        output = self.tn.read_very_eager()
+        print(output)
+        # return self._extract_pos(output)
+
+
     def read(self, name):
         # if name is None:
         #     raise ValueError("Name of object to read is required")
