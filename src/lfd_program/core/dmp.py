@@ -26,6 +26,8 @@ class DMPProgram(object):
                                goal_joint=goal_joint, duration=duration_scale)
         self.a_client.send_goal(goal)
         self.a_client.wait_for_result()
+        result = self.a_client.get_result()
+        return result.plan
     
     def execute(self, goal_joint = JointTrajectoryPoint(),
                   duration_scale = 0):

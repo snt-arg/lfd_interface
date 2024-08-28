@@ -1,6 +1,10 @@
 import rospy
+import math
+
+import numpy as np
 
 from controller_manager_msgs.srv import SwitchController
+from trajectory_msgs.msg import JointTrajectory
 
 from abb_rapid_msgs.msg import *
 from abb_robot_msgs.srv import *
@@ -9,6 +13,70 @@ from abb_rapid_sm_addin_msgs.srv import *
 from abb_rapid_sm_addin_msgs.msg import RuntimeState, StateMachineState
 
 from lfd_program.core.robot import RobotProgram
+
+class FormatTrajectory():
+
+    def __init__(self, num_points = 15):
+        self.num_points = num_points
+        pass
+
+    def segment(self, joint_trajectory_msg):
+        trajectory_length = len(joint_trajectory_msg.points)
+        
+        # If the trajectory has fewer than the required points, return the whole trajectory
+        if trajectory_length <= self.num_points:
+            return joint_trajectory_msg
+        
+        # Calculate indices of the sampled points
+        indices = np.linspace(0, trajectory_length - 1, num=self.num_points, dtype=int)
+        indices = indices[1:]
+        
+        # Create a new JointTrajectory message for the sampled points
+        sampled_trajectory_msg = JointTrajectory()
+        
+        # Copy over the joint names from the original message
+        sampled_trajectory_msg.joint_names = joint_trajectory_msg.joint_names
+        
+        # Extract the sampled points
+        for i in indices:
+            sampled_trajectory_msg.points.append(joint_trajectory_msg.points[i])
+        
+        return sampled_trajectory_msg
+
+    def move_third_to_end(self, lst):
+        # Check if the list has at least three elements
+        lst = list(lst)
+        if len(lst) >= 3:
+            # Pop the third element (index 2) and append it to the end
+            third_element = lst.pop(2)
+            lst.append(third_element)
+        return lst
+
+    def radians_to_degrees(self, radians):
+        degrees_list = [radian * (180 / math.pi) for radian in radians]
+        return degrees_list
+
+    def format(self, joint_trajectory_msg):
+        joint_trajectory_msg = self.segment(joint_trajectory_msg)
+        trajectory_str = "joint targets:\n"
+        # trajectory_str += "v50\n"
+        # trajectory_str += "z80\n"
+        
+        for point in joint_trajectory_msg.points:
+            positions = self.move_third_to_end(point.positions)
+            positions = self.radians_to_degrees(positions)
+
+            positions_str1 = ','.join([f"{pos:.4f}" for pos in positions[:-1]])
+            positions_str1 = f"[{positions_str1}]\n"
+            positions_str2 = f"[{positions[-1]:.4f}" + ",9E+09,9E+09,9E+09,9E+09,9E+09]\n"
+            
+            positions_str = positions_str1 + positions_str2
+            # Append this to the trajectory string with a new line
+            trajectory_str += positions_str
+            
+        
+        # Return the full trajectory string
+        return trajectory_str
 
 class StateMachineRunner():
 
@@ -20,6 +88,7 @@ class StateMachineRunner():
         rospy.wait_for_service('/yumi/rws/sm_addin/run_rapid_routine')
         rospy.wait_for_service("/yumi/rws/sm_addin/set_sg_command")
         rospy.wait_for_service("/yumi/rws/sm_addin/run_sg_routine")
+        rospy.wait_for_service("/yumi/rws/set_file_contents")
 
         self.rapid_running = False
         self.egm_running = False
@@ -77,6 +146,9 @@ class StateMachineRunner():
         self.rapid_running = any([sm.sm_state == StateMachineState.SM_STATE_RUN_RAPID_ROUTINE for sm in msg.state_machines])
         self.egm_running = any([sm.sm_state == StateMachineState.SM_STATE_RUN_EGM_ROUTINE for sm in msg.state_machines])
 
+    def set_file_contents(self, filename, contents):
+        s_set_file_contents = rospy.ServiceProxy("/yumi/rws/set_file_contents", SetFileContents)
+        s_set_file_contents(filename=filename, contents=contents)
 
 class YumiProgram(RobotProgram):
 
@@ -110,8 +182,16 @@ class YumiProgram(RobotProgram):
             self.gripper_grasp(arg)
 
     def move(self, move_method, *args, **kwargs):
-        if not self.sm_runner.egm_running:
-            self.sm_runner.activate_egm()
+        # if not self.sm_runner.egm_running:
+        #     self.sm_runner.activate_egm()
         # self.egm_runner.activate_egm()
-        super().move(move_method, *args, **kwargs)
+        # super().move(move_method, *args, **kwargs)
         # self.egm_runner.deactivate_egm()
+
+        plan = move_method(*args, **kwargs)
+        formatter = FormatTrajectory(num_points=15)
+        content = formatter.format(plan)
+        self.sm_runner.set_file_contents("joint_targets_l.txt", content)
+        rospy.sleep(0.5)
+        self.sm_runner.run_rapid(l_routine="execute", nonblocking=False)
+        # print(plan)
