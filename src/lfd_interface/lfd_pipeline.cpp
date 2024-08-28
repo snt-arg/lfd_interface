@@ -40,13 +40,17 @@ void LFDPipeline::executeCBLFDPipeline(const lfd_interface::LFDPipelineGoalConst
             lfd_planner_.init(goal->name + std::to_string(i),
                             goal->goal_joint,
                             goal->duration);
-            lfd_planner_.runViz();
+            result_lfd_pipeline_.plan = lfd_planner_.runViz();
+
         }
     }
-    else if (goal->execute)
+    if (goal->execute)
     {
         for (size_t i = 0; i < demo_count; i++)
         {
+            if (goal->visualize)
+                moveit_util_.getVisualTools()->prompt("press next to execute the planned trajectory");
+            
             lfd_planner_.init(goal->name + std::to_string(i),
                             goal->goal_joint,
                             goal->duration);

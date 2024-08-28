@@ -74,13 +74,13 @@ lfd_interface::PlanMsg LFDPlanner::fetchPlanMetaData()
     return plan_metadata_;
 }
 
-void LFDPlanner::runViz()
+trajectory_msgs::JointTrajectory LFDPlanner::runViz()
 {
     visualizePlannedTrajectory();
-
-    moveit_util_.getVisualTools()->prompt("press next to execute the planned trajectory");
+    return plan_;
+    // moveit_util_.getVisualTools()->prompt("press next to execute the planned trajectory");
     
-    executePlan();
+    // executePlan();
 }
 
 void LFDPlanner::runExec()

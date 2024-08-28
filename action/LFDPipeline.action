@@ -9,4 +9,5 @@ bool control
 ---
 #result
 bool success
+trajectory_msgs/JointTrajectory plan
 ---
