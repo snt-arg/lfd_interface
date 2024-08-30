@@ -25,7 +25,7 @@ private:
     lfd_interface::LFDPipelineResult result_lfd_pipeline_;
 
 public:
-    LFDPipeline(std::string planning_group,std::string base_frame) ;
+    LFDPipeline(std::string planning_group,std::string base_frame, std::string robot_ns); ;
     ~LFDPipeline();
 
 

@@ -11,9 +11,9 @@ from trajectory_msgs.msg import JointTrajectoryPoint
 
 class MoveitProgram(object):
 
-    def __init__(self):
-        self.ac_planjoint = actionlib.SimpleActionClient("/plan_joint", PlanJointAction)
-        self.ac_planpose = actionlib.SimpleActionClient("/plan_pose", PlanPoseAction)
+    def __init__(self,robot_ns):
+        self.ac_planjoint = actionlib.SimpleActionClient(f"{robot_ns}/plan_joint", PlanJointAction)
+        self.ac_planpose = actionlib.SimpleActionClient(f"{robot_ns}/plan_pose", PlanPoseAction)
 
         self.ac_planjoint.wait_for_server()
         self.ac_planpose.wait_for_server()

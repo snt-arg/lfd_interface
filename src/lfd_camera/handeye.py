@@ -13,13 +13,13 @@ from lfd_program.core.camera import CameraProgram
 
 class DataCollection:
 
-    def __init__(self):
+    def __init__(self, robot_ns):
         self.robot_pose = None
         self.camera_pose = None
 
         self.camera = CameraProgram()
 
-        rospy.Subscriber('/pose_state', Pose, self.pose_callback)
+        rospy.Subscriber(f'{robot_ns}/pose_state', Pose, self.pose_callback)
 
     def pose_callback(self, msg):
         self.robot_pose = msg

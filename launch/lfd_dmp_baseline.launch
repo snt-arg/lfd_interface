@@ -9,6 +9,7 @@
     <arg name="num_kernels" default="10"/>
 
     <include file="$(find lfd_dmp)/launch/dmp_bringup.launch">
+        <arg name="robot_ns" value="$(arg config)"/>
         <arg name="dmp_method" value="$(arg dmp_method)"/>
         <arg name="training_mode" value="$(arg training_mode)"/>
         <arg name="num_kernels" value="$(arg num_kernels)"/>
@@ -16,7 +17,7 @@
 
     <include file="$(find lfd_interface)/launch/lfd_storage.launch"/>
     
-    <node name="lfd_dmp_baseline" pkg="lfd_interface" type="lfd_dmp_baseline" output="screen">
+    <node name="lfd_dmp_baseline_$(arg config)" pkg="lfd_interface" type="lfd_dmp_baseline" output="screen">
         <rosparam command="load" file="$(arg config_file)" />
     </node>
 

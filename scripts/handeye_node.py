@@ -30,6 +30,7 @@ def update_config(path, robot, camera):
 
 def main(stdscr):
     rospy.init_node('handeye_node', anonymous=True)
+    robot_ns = rospy.get_param("~robot_ns")
 
     # Add the custom representer to the dumper
     MyDumper.add_representer(list, my_represent_list)
@@ -37,7 +38,7 @@ def main(stdscr):
     config_path = rospy.get_param("~config_path")
     os.makedirs(os.path.dirname(config_path), exist_ok=True)
 
-    data_collection = DataCollection()
+    data_collection = DataCollection(robot_ns)
 
     robot = []
     camera = []

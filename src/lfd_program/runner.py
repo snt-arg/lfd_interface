@@ -21,21 +21,22 @@ class ProgramRunner:
             self.camera = CameraProgram()
         
         self.duration_scale = duration_scale
-        self.moveit = MoveitProgram()
+        self.moveit = MoveitProgram(robot_type)
+        self.robot_ns = robot_type
         
         if robot_type == "fr3":
             self.fk = FK("fr3_hand_tcp", "fr3_link0")
-            self.ik = IK()
+            self.ik = IK(robot_type)
             self.robot = FrankaProgram()
 
         elif robot_type == "yumi_l":
             self.fk = FK("gripper_l_tip", "yumi_base_link")
-            self.ik = IK()
+            self.ik = IK(robot_type)
             self.robot = YumiProgram(robot_type)
             
         elif robot_type == "yumi_r":
             self.fk = FK("gripper_r_tip", "yumi_base_link")
-            self.ik = IK()
+            self.ik = IK(robot_type)
             self.robot = YumiProgram(robot_type)
         
         self.dmps = {}
@@ -92,7 +93,7 @@ class ProgramRunner:
         return pos
 
     def _dmp_train(self, demo_name : str):
-        self.dmps[demo_name] = DMPProgram(demo_name)
+        self.dmps[demo_name] = DMPProgram(demo_name, self.robot_ns)
         self.dmps[demo_name].train()
 
     def gripper(self, command: str, arg : str):

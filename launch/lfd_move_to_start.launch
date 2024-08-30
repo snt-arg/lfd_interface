@@ -1,7 +1,9 @@
 <launch>
     <arg name="demo_name" default="smoothfrpick" />
+    <arg name="robot_ns" default="fr3" />
 
     <node name="lfd_move_to_start" pkg="lfd_interface" type="lfd_move_to_start.py" output="screen">
         <param name="demo_name" value="$(arg demo_name)" />
+        <param name="robot_ns" value="$(arg robot_ns)" />
     </node>
 </launch>

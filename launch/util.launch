@@ -4,7 +4,7 @@
 
     <arg name="config_file" value="$(find lfd_interface)/config/demonstrations/$(arg config).yaml"/>
     
-    <node name="util_node" pkg="lfd_interface" type="util_node" output="screen">
+    <node name="util_node_$(arg config)" pkg="lfd_interface" type="util_node" output="screen">
         <rosparam command="load" file="$(arg config_file)" />
     </node>
 

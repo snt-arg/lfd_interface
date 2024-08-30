@@ -28,7 +28,7 @@ private:
     bool trainDemonstration();
 
 public:
-    LFDTrainer();
+    LFDTrainer(std::string robot_ns);
     ~LFDTrainer();
     void run();
     void init(std::string demonstration_name);

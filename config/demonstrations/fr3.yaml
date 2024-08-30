@@ -1,3 +1,4 @@
+robot_ns: "fr3"
 planning_group: "fr3_arm"
 base_frame: "fr3_link0"
 ee_frame: "fr3_hand_tcp"

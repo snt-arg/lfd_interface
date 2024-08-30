@@ -48,7 +48,7 @@ private:
     void displayPlannedPath();
 
 public:
-    LFDPlanner(MoveitUtil & moveit_util);
+    LFDPlanner(MoveitUtil & moveit_util, std::string robot_ns);
     ~LFDPlanner();
     void visualizePlannedTrajectory();
     lfd_interface::PlanMsg fetchPlanMetaData();

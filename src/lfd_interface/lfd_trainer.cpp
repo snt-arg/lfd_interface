@@ -1,10 +1,10 @@
 #include <lfd_interface/lfd_trainer.h>
 
-LFDTrainer::LFDTrainer()
+LFDTrainer::LFDTrainer(std::string robot_ns)
 {
     client_load_demonstration_ = nh_.serviceClient<lfd_interface::GetDemonstration>("get_demonstration");
 
-    client_train_demonstration_ = nh_.serviceClient<lfd_interface::TrainDemonstration>("train_demonstration");
+    client_train_demonstration_ = nh_.serviceClient<lfd_interface::TrainDemonstration>(robot_ns + "/train_demonstration");
 
 }
 

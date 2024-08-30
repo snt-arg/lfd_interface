@@ -76,8 +76,8 @@ class FK(object):
 
 class IK(object):
 
-    def __init__(self):
-        self.service_name = '/ik_service'
+    def __init__(self, robot_ns):
+        self.service_name = f'{robot_ns}/ik_service'
         rospy.wait_for_service(self.service_name)
         self.ik_service = rospy.ServiceProxy(self.service_name, IKService)
     

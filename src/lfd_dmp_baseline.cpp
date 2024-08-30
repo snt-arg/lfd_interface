@@ -14,14 +14,15 @@ int main(int argc, char** argv)
     spinner.start();
 
     //Fetch params
-    std::string planning_group,base_frame;
+    std::string planning_group,base_frame, robot_ns;
     std::size_t error = 0, demo_count;
     std::string LOGNAME{"lfd_dmp_baseline"};
     error += !rosparam_shortcuts::get(LOGNAME, pnh, "planning_group", planning_group);
     error += !rosparam_shortcuts::get(LOGNAME, pnh, "base_frame", base_frame);
+    error += !rosparam_shortcuts::get(LOGNAME, pnh, "robot_ns", robot_ns);
     rosparam_shortcuts::shutdownIfError(LOGNAME, error);
 
-    LFDPipeline lfd_pipeline(planning_group, base_frame);
+    LFDPipeline lfd_pipeline(planning_group, base_frame, robot_ns);
 
 
     ros::waitForShutdown();

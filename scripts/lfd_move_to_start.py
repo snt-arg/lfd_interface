@@ -7,8 +7,8 @@ from lfd_interface.srv import GetDemonstration
 
 
 class MoveToStart:
-    def __init__(self):
-        self.moveit_prog = MoveitProgram()
+    def __init__(self,robot_ns):
+        self.moveit_prog = MoveitProgram(robot_ns)
         self.sc_lfd_storage = rospy.ServiceProxy("get_demonstration", GetDemonstration)
         
 
@@ -22,7 +22,8 @@ class MoveToStart:
 if __name__ == "__main__":
     rospy.init_node("move_to_start")
     demo_name = rospy.get_param("~demo_name")
+    robot_ns = rospy.get_param("~robot_ns")
     print(demo_name)
-    move_to_start = MoveToStart()
+    move_to_start = MoveToStart(robot_ns)
     move_to_start.run(demo_name)
     # rospy.spin()

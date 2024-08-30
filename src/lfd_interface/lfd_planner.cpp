@@ -1,9 +1,9 @@
 #include <lfd_interface/lfd_planner.h>
 
-LFDPlanner::LFDPlanner(MoveitUtil & moveit_util):
-moveit_util_(moveit_util)
+LFDPlanner::LFDPlanner(MoveitUtil & moveit_util, std::string robot_ns):
+moveit_util_(moveit_util), trainer(robot_ns)
 {
-    client_plan_lfd_ = nh_.serviceClient<lfd_interface::PlanLFD>("plan_lfd");
+    client_plan_lfd_ = nh_.serviceClient<lfd_interface::PlanLFD>(robot_ns + "/plan_lfd");
 
     auto visual_tools = moveit_util_.getVisualTools();
     visual_tools->deleteAllMarkers();

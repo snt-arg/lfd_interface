@@ -1,9 +1,9 @@
 #include <lfd_interface/lfd_pipeline.h>
 
 
-LFDPipeline::LFDPipeline(std::string planning_group,std::string base_frame):
-moveit_util_(planning_group,base_frame), lfd_planner_(moveit_util_), lfd_controller_(moveit_util_),
-as_lfd_pipeline_(nh_, "lfd_pipeline", boost::bind(&LFDPipeline::executeCBLFDPipeline, this, _1), false)
+LFDPipeline::LFDPipeline(std::string planning_group,std::string base_frame, std::string robot_ns):
+moveit_util_(planning_group,base_frame), lfd_planner_(moveit_util_,robot_ns), lfd_controller_(moveit_util_), lfd_trainer_(robot_ns),
+as_lfd_pipeline_(nh_, robot_ns + "/lfd_pipeline", boost::bind(&LFDPipeline::executeCBLFDPipeline, this, _1), false)
 {
     sc_democount_ = nh_.serviceClient<lfd_interface::DemoCount>("fetch_demo_count");
     as_lfd_pipeline_.start();

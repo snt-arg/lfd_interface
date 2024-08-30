@@ -92,11 +92,12 @@ int main(int argc, char** argv)
     spinner.start();
 
     //Fetch params
-    std::string planning_group,base_frame;
+    std::string planning_group,base_frame, robot_ns;
     std::string LOGNAME{"util"};
     std::size_t error = 0;
     error += !rosparam_shortcuts::get(LOGNAME, pnh, "planning_group", planning_group);
     error += !rosparam_shortcuts::get(LOGNAME, pnh, "base_frame", base_frame);
+    error += !rosparam_shortcuts::get(LOGNAME, pnh, "robot_ns", robot_ns);
     rosparam_shortcuts::shutdownIfError(LOGNAME, error);
 
     MoveitUtil moveit_util(planning_group,base_frame);
@@ -104,14 +105,14 @@ int main(int argc, char** argv)
     trajectory_msgs::JointTrajectoryPoint joint_values = getJointState(moveit_util);
     lfd_interface::PoseTrajectoryPoint pose_values = getPoseState(moveit_util);
 
-    auto pose_publisher = nh.advertise<geometry_msgs::Pose>("pose_state", 0);
+    auto pose_publisher = nh.advertise<geometry_msgs::Pose>(robot_ns + "/pose_state", 0);
     ros::Rate loop_rate(50); 
 
     // std::vector<double> joint_positions = {-0.00533887, -0.80099008, 0.00345199, -2.37769808, 0.00247941, 1.57670778, 0.78244555};
     // moveit_util.planPath(joint_positions);
     // moveit_util.move();
 
-    PlanJointAction as_plan_joint("/plan_joint", moveit_util);
+    PlanJointAction as_plan_joint(robot_ns + "/plan_joint", moveit_util);
 
     while (ros::ok())
     {

@@ -10,9 +10,10 @@ from lfd_interface.srv import GetDemonstration
 
 class DMPProgram(object):
 
-    def __init__(self, name):
+    def __init__(self, name, robot_ns):
+        print(robot_ns)
         self.name = name
-        self.a_client = actionlib.SimpleActionClient('lfd_pipeline', LFDPipelineAction)
+        self.a_client = actionlib.SimpleActionClient(f'{robot_ns}/lfd_pipeline', LFDPipelineAction)
         self.a_client.wait_for_server()
     
     def train(self):

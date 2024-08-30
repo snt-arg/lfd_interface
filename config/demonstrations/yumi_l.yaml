@@ -1,3 +1,4 @@
+robot_ns: "yumi_l"
 planning_group: "left_arm"
 base_frame: "yumi_base_link"
 ee_frame: "gripper_l_tip"
