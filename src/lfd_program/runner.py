@@ -32,12 +32,12 @@ class ProgramRunner:
         elif robot_type == "yumi_l":
             self.fk = FK("gripper_l_tip", "yumi_base_link")
             self.ik = IK(robot_type)
-            self.robot = YumiProgram(robot_type)
+            self.robot = YumiProgram(robot_type, fk=self.fk)
             
         elif robot_type == "yumi_r":
             self.fk = FK("gripper_r_tip", "yumi_base_link")
             self.ik = IK(robot_type)
-            self.robot = YumiProgram(robot_type)
+            self.robot = YumiProgram(robot_type, fk=self.fk)
         
         self.dmps = {}
     
