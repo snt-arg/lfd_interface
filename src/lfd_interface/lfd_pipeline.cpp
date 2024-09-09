@@ -54,7 +54,7 @@ void LFDPipeline::executeCBLFDPipeline(const lfd_interface::LFDPipelineGoalConst
             lfd_planner_.init(goal->name + std::to_string(i),
                             goal->goal_joint,
                             goal->duration);
-            lfd_planner_.runExec();
+            result_lfd_pipeline_.plan = lfd_planner_.runExec();
         }
     }
     else if (goal->control)

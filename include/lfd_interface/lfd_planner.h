@@ -53,7 +53,7 @@ public:
     void visualizePlannedTrajectory();
     lfd_interface::PlanMsg fetchPlanMetaData();
     trajectory_msgs::JointTrajectory runViz();
-    void runExec();
+    trajectory_msgs::JointTrajectory runExec();
     void init(std::string demonstration_name,
             trajectory_msgs::JointTrajectoryPoint goal_joint=trajectory_msgs::JointTrajectoryPoint(),
             double duration=0.0);

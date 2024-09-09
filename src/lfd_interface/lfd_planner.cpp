@@ -83,7 +83,7 @@ trajectory_msgs::JointTrajectory LFDPlanner::runViz()
     // executePlan();
 }
 
-void LFDPlanner::runExec()
+trajectory_msgs::JointTrajectory LFDPlanner::runExec()
 {
     trajectory_msgs::JointTrajectoryPoint start;
     moveit_util_.currentJointState(start);
@@ -93,6 +93,7 @@ void LFDPlanner::runExec()
     // refine();
 
     executePlan();
+    return plan_;
 
 }
 
