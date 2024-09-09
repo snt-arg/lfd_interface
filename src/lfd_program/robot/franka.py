@@ -5,14 +5,37 @@ import actionlib
 
 from lfd_program.core.robot import RobotProgram
 from franka_gripper.msg import MoveAction, MoveGoal, GraspAction, GraspGoal
+from lfd_program.util.kinematics import FK, IK
 
-class FrankaProgram(RobotProgram):
 
-    def __init__(self):
+class FR3(RobotProgram):
+    def __init__(self) -> None:
+        self.fk = FK("fr3_hand_tcp", "fr3_link0")
+        self.ik = IK("fr3")
         self.ac_move = actionlib.SimpleActionClient('/franka_gripper/move', MoveAction)
         self.ac_grasp = actionlib.SimpleActionClient('/franka_gripper/grasp', GraspAction)
         self.ac_move.wait_for_server()
+        self.gripper = FrankaGripper()
+    
+    def move(self, motion_program, debug=False):
+        motion_program.run(debug)
 
+class FrankaGripper:
+
+    def __init__(self) -> None:
+        self.ac_move = actionlib.SimpleActionClient('/franka_gripper/move', MoveAction)
+        self.ac_grasp = actionlib.SimpleActionClient('/franka_gripper/grasp', GraspAction)
+        self.ac_move.wait_for_server()
+    
+    def moveto(self, target_pos):
+        pass
+    
+    def grasp(self, command):
+        if command == "open":
+            pass
+        elif command == "close":
+            pass
+    
     def gripper_open(self, width=0.08, speed=0.1):
         goal = MoveGoal()
         goal.width = width
@@ -42,4 +65,5 @@ class FrankaProgram(RobotProgram):
         if result.success:
             rospy.loginfo('Grasp Action succeeded!')
         else:
-            rospy.logerr('Grasp Action failed with error: %s', result.error)    
+            rospy.logerr('Grasp Action failed with error: %s', result.error)      
+

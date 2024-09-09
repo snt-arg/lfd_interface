@@ -14,6 +14,7 @@ from abb_rapid_sm_addin_msgs.srv import *
 from abb_rapid_sm_addin_msgs.msg import RuntimeState, StateMachineState
 
 from lfd_program.core.robot import RobotProgram
+from lfd_program.util.kinematics import FK, IK
 
 zone_data = {
     "z0": [0.3, 0.3, 0.3, 0.03, 0.3, 0.03],
@@ -237,50 +238,65 @@ class StateMachineRunner():
         s_set_file_contents = rospy.ServiceProxy("/yumi/rws/set_file_contents", SetFileContents)
         s_set_file_contents(filename=filename, contents=contents)
 
-class YumiProgram(RobotProgram):
 
-    def __init__(self, robot_arm = "yumi_l", fk = None):
-        if robot_arm == "yumi_l":
-            robot_arm = "T_ROB_L"
-        elif robot_arm == "yumi_r":
-            robot_arm = "T_ROB_R"
+class YumiL(RobotProgram):
+    def __init__(self) -> None:
+        self.fk = FK("gripper_l_tip", "yumi_base_link")
+        self.ik = IK("yumi_l")
+        
+        self.task_name = "T_ROB_L"
+        self.traj_file = "joint_targets_l.txt"
 
-        if fk is not None:
-            self.fk = fk
-            
-        self.robot_arm = robot_arm        
         self.sm_runner = StateMachineRunner()
+        self.gripper = YumiGripper(task=self.task_name, sm_runner=self.sm_runner)
+    
+    def move(self, motion_program, debug=False):
+        plan = motion_program.run(debug)
 
-    def gripper_moveto(self, arg):
-        self.sm_runner.set_sg_command(task=self.robot_arm, command=SetSGCommandRequest.SG_COMMAND_MOVE_TO, target_pos=float(arg))
-        rospy.sleep(0.5)
-        self.sm_runner.run_sg_routine()
+        formatter = FormatTrajectory(num_points=25, fk=self.fk)
+        content = formatter.format(plan)
+        self.sm_runner.set_file_contents(self.traj_file, content)
+        # rospy.sleep(0.5)
+        self.sm_runner.run_rapid(l_routine="execute", nonblocking=False)
 
-    def gripper_grasp(self, arg):
-        print(f"Running gripper grasp {arg}")
-        if arg == "open":
-            self.sm_runner.set_sg_command(task=self.robot_arm, command=SetSGCommandRequest.SG_COMMAND_GRIP_OUT)
-        elif arg == "close":
-            self.sm_runner.set_sg_command(task=self.robot_arm, command=SetSGCommandRequest.SG_COMMAND_GRIP_IN)
+
+class YumiR(RobotProgram):
+    def __init__(self) -> None:
+        self.fk = FK("gripper_r_tip", "yumi_base_link")
+        self.ik = IK("yumi_r")
+        
+        self.task_name = "T_ROB_R"
+        self.traj_file = "joint_targets_r.txt"
+
+        self.sm_runner = StateMachineRunner()
+        self.gripper = YumiGripper(task=self.task_name, sm_runner=self.sm_runner)
+    
+    def move(self, motion_program, debug=False):
+        plan = motion_program.run(debug)
+
+        formatter = FormatTrajectory(num_points=25, fk=self.fk)
+        content = formatter.format(plan)
+        self.sm_runner.set_file_contents(self.traj_file, content)
+        # rospy.sleep(0.5)
+        self.sm_runner.run_rapid(r_routine="execute", nonblocking=False)
+
+
+class YumiGripper:
+
+    def __init__(self, task, sm_runner) -> None:
+        self.task = task
+        self.sm_runner = sm_runner
+    
+    def moveto(self, target_pos):
+        self.sm_runner.set_sg_command(task=self.task, command=SetSGCommandRequest.SG_COMMAND_MOVE_TO, target_pos=float(target_pos))
         rospy.sleep(0.5)
         self.sm_runner.run_sg_routine()
     
-    def gripper(self, command, arg):
-        if command == "moveto":
-            self.gripper_moveto(arg)
-        elif command == "grasp":
-            self.gripper_grasp(arg)
-
-    def move(self, move_method, *args, **kwargs):
-        # if not self.sm_runner.egm_running:
-        #     self.sm_runner.activate_egm()
-        # self.egm_runner.activate_egm()
-        # super().move(move_method, *args, **kwargs)
-        # self.egm_runner.deactivate_egm()
-
-        plan = move_method(*args, **kwargs)
-        formatter = FormatTrajectory(num_points=25, fk=self.fk)
-        content = formatter.format(plan)
-        self.sm_runner.set_file_contents("joint_targets_l.txt", content)
+    def grasp(self, command):
+        if command == "open":
+            self.sm_runner.set_sg_command(task=self.task, command=SetSGCommandRequest.SG_COMMAND_GRIP_OUT)
+        elif command == "close":
+            self.sm_runner.set_sg_command(task=self.task, command=SetSGCommandRequest.SG_COMMAND_GRIP_IN)
         rospy.sleep(0.5)
-        self.sm_runner.run_rapid(l_routine="execute", nonblocking=False)
+        self.sm_runner.run_sg_routine()
+
