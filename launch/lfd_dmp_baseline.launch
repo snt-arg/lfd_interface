@@ -1,6 +1,7 @@
 <launch>
 
     <arg name="config" default="default"/>
+    <arg name="load_storage" default="true"/>
 
     <arg name="config_file" value="$(find lfd_interface)/config/demonstrations/$(arg config).yaml"/>
     <arg name="dmp_method" default="dmpbbo"/>
@@ -15,7 +16,7 @@
         <arg name="num_kernels" value="$(arg num_kernels)"/>
     </include>
 
-    <include file="$(find lfd_interface)/launch/lfd_storage.launch"/>
+    <include file="$(find lfd_interface)/launch/lfd_storage.launch" if="$(arg load_storage)"/>
     
     <node name="lfd_dmp_baseline_$(arg config)" pkg="lfd_interface" type="lfd_dmp_baseline" output="screen">
         <rosparam command="load" file="$(arg config_file)" />
