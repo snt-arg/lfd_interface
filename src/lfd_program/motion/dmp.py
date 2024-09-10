@@ -26,17 +26,21 @@ class DMPProgram(MotionProgram):
         if "demo_name" in kwargs:
             self.demo_name = kwargs.get("demo_name")
             self.default_joint_target = kwargs.get("default_joint_target", None)
+            
+            if self.default_joint_target is None:
+                self.default_joint_target = self.demo_goal_joint()
+            
+            if self.demo_name not in self.dmps:
+                self.train()
+                self.dmps.append(self.demo_name)
+
         if "default_joint_target" in kwargs:
             self.default_joint_target = kwargs.get("default_joint_target", None)
+            if self.default_joint_target is None:
+                self.default_joint_target = self.demo_goal_joint()
         if "duration_scale" in kwargs:
             self.duration_scale = kwargs.get("duration_scale",0)
         
-        if self.default_joint_target is None:
-            self.default_joint_target = self.demo_goal_joint()
-        
-        if self.demo_name not in self.dmps:
-            self.train()
-            self.dmps.append(self.demo_name)
         
     def train(self):
         goal = LFDPipelineGoal(name=self.demo_name, train=True)

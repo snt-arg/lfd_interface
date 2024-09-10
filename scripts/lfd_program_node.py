@@ -2,7 +2,7 @@
 
 import rospy
 
-from lfd_program.runner import ProgramRunner
+from lfd_program.runner import ProgramRunner, YumiRunner
 
 
 if __name__ == "__main__":
@@ -12,40 +12,52 @@ if __name__ == "__main__":
     robot = rospy.get_param("~robot", "yumi_l")
     duration_scale = rospy.get_param("~duration_scale", 5)
     camera = rospy.get_param("~camera", False)
+
     if robot=="yumi":
-        runner_l = ProgramRunner(robot_type="yumi_l", camera=camera, duration_scale=duration_scale)
-        runner_r = ProgramRunner(robot_type="yumi_r", camera=camera, duration_scale=duration_scale)
-        runner_l.move(None, "smoothylhometoscrewreverse")
-        runner_r.move(None, "smoothyrtestreverse")
-        runner_l.move(None, "smoothylhometoscrew")
-        runner_r.move(None, "smoothyrtest")
+        yumi_runner = YumiRunner()
+        yumi_runner.set_motion_mode("dmp")
+        yumi_runner.configure_motion(duration_scale=duration_scale)
+
+        yumi_runner.configure_l_motion(demo_name="smoothylhometoscrew")
+        yumi_runner.configure_r_motion(demo_name="smoothyrtest")
+        yumi_runner.move()
+
+        yumi_runner.configure_l_motion(demo_name="smoothylhometoscrewreverse")
+        yumi_runner.configure_r_motion(demo_name="smoothyrtestreverse")
+        yumi_runner.move() 
+
     elif robot=="yumi_r":
         runner = ProgramRunner(robot="yumi_r")
-        
         runner.set_motion_mode("dmp")
-        runner.configure_motion(demo_name="smoothyrtest",
-                                duration_scale=duration_scale)
-        runner.move(debug=False)
-        runner.configure_motion(demo_name="smoothyrtestreverse",
-                                duration_scale=duration_scale)        
-        runner.move(debug=False)
+        runner.configure_motion(duration_scale=duration_scale)
 
-        runner.configure_motion(demo_name="smoothyrtest",
-                                duration_scale=duration_scale)
-        runner.move(debug=False)
-        runner.configure_motion(demo_name="smoothyrtestreverse",
-                                duration_scale=duration_scale)        
-        runner.move(debug=False)
+        runner.configure_motion(demo_name="smoothyrtest")
+        runner.move()
+
+        runner.configure_motion(demo_name="smoothyrtestreverse")        
+        runner.move()
+
+        runner.configure_motion(demo_name="smoothyrtest")
+        runner.move()
+
+        runner.configure_motion(demo_name="smoothyrtestreverse")        
+        runner.move()
+
     elif robot=="yumi_l":
         runner = ProgramRunner(robot="yumi_l")
-        
         runner.set_motion_mode("dmp")
-        runner.configure_motion(demo_name="smoothylhometoscrew",
-                                duration_scale=duration_scale)
-        runner.move(debug=False)
-        runner.configure_motion(demo_name="smoothylhometoscrewreverse",
-                                duration_scale=duration_scale)        
-        runner.move(debug=False)
+        runner.configure_motion(duration_scale=duration_scale)
+
+        runner.configure_motion(demo_name="smoothylhometoscrew")
+        runner.move()
+        runner.configure_motion(demo_name="smoothylhometoscrewreverse")        
+        runner.move()
+
+
+    elif robot=="fr3":
+        pass
+
+
         # runner.robot.sm_runner.run_rapid(r_routine="movecone", nonblocking=False)
 
         # runner.robot.sm_runner.run_rapid(r_routine="mountcone", nonblocking=False)
@@ -115,17 +127,3 @@ if __name__ == "__main__":
         # #############################################
 
         # runner.move("ring", "smoothylringtest")
-
-    elif robot=="fr3":
-        runner = ProgramRunner(camera=camera, duration_scale=duration_scale)
-        runner._dmp_train("smoothfrpick")
-        runner._dmp_train("smoothfrplace")
-
-        runner.gripper("open")
-        runner.move("nomatter", "smoothfrpick")
-        runner.gripper("close", True)
-        runner.move(None, "smoothfrplace")
-        runner.gripper("open")
-
-
-    # rospy.spin() 

@@ -188,6 +188,9 @@ class StateMachineRunner():
         """
         Function: run_rapid, to set and run RAPID Routine.
         """
+        # return if no routine is provided
+        if (l_routine is None) and (r_routine is None):
+            return
         #
         set_rapid_routine = rospy.ServiceProxy('/yumi/rws/sm_addin/set_rapid_routine', SetRAPIDRoutine)
         run_rapid_routine = rospy.ServiceProxy('/yumi/rws/sm_addin/run_rapid_routine', TriggerWithResultCode)
@@ -238,48 +241,55 @@ class StateMachineRunner():
         s_set_file_contents = rospy.ServiceProxy("/yumi/rws/set_file_contents", SetFileContents)
         s_set_file_contents(filename=filename, contents=contents)
 
-
-class YumiL(RobotProgram):
+class YumiProgram(RobotProgram):
     def __init__(self) -> None:
+        self.sm_runner = StateMachineRunner()
+    
+    def add_gripper(self, task_name):
+        self.gripper = YumiGripper(task=task_name, sm_runner=self.sm_runner)
+
+    def write_motion(self, plan):
+        formatter = FormatTrajectory(num_points=25, fk=self.fk)
+        content = formatter.format(plan)
+        self.sm_runner.set_file_contents(self.traj_file, content)
+
+    def execute_motion(self, **kwargs):
+        self.sm_runner.run_rapid(nonblocking=False, **kwargs)
+    
+    def move_generic(self, motion_program, debug=False, **kwargs):
+        plan = motion_program.run(debug)
+        self.write_motion(plan)
+        # rospy.sleep(0.5)
+        self.execute_motion(**kwargs)
+    
+
+class YumiL(YumiProgram):
+    def __init__(self) -> None:
+        super().__init__()
         self.fk = FK("gripper_l_tip", "yumi_base_link")
         self.ik = IK("yumi_l")
         
         self.task_name = "T_ROB_L"
         self.traj_file = "joint_targets_l.txt"
 
-        self.sm_runner = StateMachineRunner()
-        self.gripper = YumiGripper(task=self.task_name, sm_runner=self.sm_runner)
+        self.add_gripper(self.task_name)
     
     def move(self, motion_program, debug=False):
-        plan = motion_program.run(debug)
+        self.move_generic(motion_program, debug, l_routine="execute")
 
-        formatter = FormatTrajectory(num_points=25, fk=self.fk)
-        content = formatter.format(plan)
-        self.sm_runner.set_file_contents(self.traj_file, content)
-        # rospy.sleep(0.5)
-        self.sm_runner.run_rapid(l_routine="execute", nonblocking=False)
-
-
-class YumiR(RobotProgram):
+class YumiR(YumiProgram):
     def __init__(self) -> None:
+        super().__init__()
         self.fk = FK("gripper_r_tip", "yumi_base_link")
         self.ik = IK("yumi_r")
         
         self.task_name = "T_ROB_R"
         self.traj_file = "joint_targets_r.txt"
 
-        self.sm_runner = StateMachineRunner()
-        self.gripper = YumiGripper(task=self.task_name, sm_runner=self.sm_runner)
-    
+        self.add_gripper(self.task_name)
+
     def move(self, motion_program, debug=False):
-        plan = motion_program.run(debug)
-
-        formatter = FormatTrajectory(num_points=25, fk=self.fk)
-        content = formatter.format(plan)
-        self.sm_runner.set_file_contents(self.traj_file, content)
-        # rospy.sleep(0.5)
-        self.sm_runner.run_rapid(r_routine="execute", nonblocking=False)
-
+        self.move_generic(motion_program, debug, r_routine="execute")
 
 class YumiGripper:
 

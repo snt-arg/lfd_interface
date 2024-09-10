@@ -51,8 +51,49 @@ class ProgramRunner:
                                                    self.motion_program, 
                                                    self.robot_program)
         self.motion_program.set_target(joint_target)
-  
 
+
+class YumiRunner:
+
+    def __init__(self):
+        self.yumi_l_program = ProgramRunner("yumi_l")
+        self.yumi_r_program = ProgramRunner("yumi_r")
+        self.gripper_l = self.yumi_l_program.gripper
+        self.gripper_r = self.yumi_r_program.gripper
+
+    def set_motion_mode(self, motion_mode):
+        self.yumi_l_program.set_motion_mode(motion_mode)
+        self.yumi_r_program.set_motion_mode(motion_mode)
+    
+    def configure_motion(self, **kwargs):
+        self.configure_l_motion(**kwargs)
+        self.configure_r_motion(**kwargs)
+    
+    def configure_l_motion(self, **kwargs):
+        self.yumi_l_program.configure_motion(**kwargs)
+    
+    def configure_r_motion(self, **kwargs):
+        self.yumi_r_program.configure_motion(**kwargs)
+    
+    def locate_l_target(self, alias):
+        self.yumi_l_program.locate_target(alias)
+    
+    def locate_r_target(self, alias):
+        self.yumi_r_program.locate_target(alias)
+    
+    def move_l(self, debug=False):
+        self.yumi_l_program.move(debug)
+    
+    def move_r(self, debug=False):
+        self.yumi_r_program.move(debug)
+    
+    def move(self, debug=False):
+        self.yumi_l_program.robot_program.move_generic(self.yumi_l_program.motion_program, 
+                                                       debug)
+        self.yumi_r_program.robot_program.move_generic(self.yumi_r_program.motion_program, 
+                                                       debug)
+        self.yumi_l_program.robot_program.execute_motion(r_routine="execute",
+                                                        l_routine="execute")
 
 
 
