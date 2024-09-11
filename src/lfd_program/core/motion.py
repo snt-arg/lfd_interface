@@ -14,6 +14,8 @@ class MotionProgram:
         self.joint_target = target
     
     def joint_state_to_trajectory_point(self, joint_state):
+        if isinstance(joint_state, JointTrajectoryPoint):
+            return joint_state
         point = JointTrajectoryPoint()
         point.positions = joint_state.position
         return point

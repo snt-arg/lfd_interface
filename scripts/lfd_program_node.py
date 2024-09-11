@@ -37,21 +37,31 @@ if __name__ == "__main__":
         runner.configure_motion(demo_name="smoothyrtestreverse")        
         runner.move()
 
-        runner.configure_motion(demo_name="smoothyrtest")
-        runner.move()
+        # runner.configure_motion(demo_name="smoothyrtest")
+        # runner.move()
 
-        runner.configure_motion(demo_name="smoothyrtestreverse")        
-        runner.move()
+        # runner.configure_motion(demo_name="smoothyrtestreverse")        
+        # runner.move()
 
     elif robot=="yumi_l":
         runner = ProgramRunner(robot="yumi_l")
         runner.set_motion_mode("dmp")
         runner.configure_motion(duration_scale=duration_scale)
+        runner.set_camera() 
+
+
+        # runner.configure_motion(demo_name="smoothylhometoscrewreverse")        
+        # runner.move(debug=True)
+
 
         runner.configure_motion(demo_name="smoothylhometoscrew")
-        runner.move()
+        runner.locate_target("screw")
+        runner.move(debug=True)
+
+
         runner.configure_motion(demo_name="smoothylhometoscrewreverse")        
-        runner.move()
+        runner.move(debug=True)
+
 
 
     elif robot=="fr3":
