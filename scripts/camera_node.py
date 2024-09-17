@@ -14,7 +14,7 @@ if __name__ == "__main__":
     cam = Cognex(cam_config)
 
     cam.connect()
-    cam.read_temp("khar")
+    # cam.read_temp("khar")
 
     camera_action_server = CameraActionServer("camera_action", cam, cam_config.objects)
 

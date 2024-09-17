@@ -54,12 +54,12 @@ if __name__ == "__main__":
         # runner.move(debug=True)
 
 
-        runner.configure_motion(demo_name="smoothylhometoscrew")
+        runner.configure_motion(demo_name="smoothylhometoscrewupdate")
         runner.locate_target("screw")
         runner.move(debug=True)
 
 
-        runner.configure_motion(demo_name="smoothylhometoscrewreverse")        
+        runner.configure_motion(demo_name="smoothylhometoscrewupdatereverse")        
         runner.move(debug=True)
 
 

@@ -95,30 +95,3 @@ class YumiRunner:
         self.yumi_l_program.robot_program.execute_motion(r_routine="execute",
                                                         l_routine="execute")
 
-
-
-
-
-    
-#     def _move_dmp(self, target : str, demo_name : str):
-#         """
-#         move the robot via dmp trained by the requested demo
-#         """
-#         if demo_name not in self.dmps:
-#             self._dmp_train(demo_name)
-        
-#         dmp = self.dmps[demo_name]
-
-#         if target is not None:
-#             pos = dmp.demo_goal_joint()
-#             pose = self.fk.get_pose(pos)
-            
-#             goal_pos = self._get_camera_pos(target, pose, pos)
-#             self.robot.move(dmp.execute, goal_joint=goal_pos, duration_scale=self.duration_scale)
-#         else:
-#             self.robot.move(dmp.execute, duration_scale=self.duration_scale)
-
-#     def _get_camera_pos(self, job_name : str, pose_template : Pose, pos_init: JointState):
-#         pose = self.camera.trigger(job_name, pose_template)
-#         pos = self.ik.request_ik(pose, JointTrajectoryPoint(positions=pos_init.position))
-#         return pos
