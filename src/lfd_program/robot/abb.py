@@ -93,13 +93,17 @@ class FormatTrajectory():
         degrees_list = [radian * (180 / math.pi) for radian in radians]
         return degrees_list
 
-    def format(self, joint_trajectory_msg):
+    def format(self, joint_trajectory_msg, motion_sup):
         global speed_data
         joint_trajectory_msg = self.segment(joint_trajectory_msg)
 
         speeds = self.extract_velocities(joint_trajectory_msg)
         print(speeds)
         trajectory_str = "joint targets:\n"
+        if motion_sup:
+            trajectory_str += "on\n"
+        else:
+            trajectory_str += "off\n"
         
         for i, point in enumerate(joint_trajectory_msg.points):
             positions = self.move_third_to_end(point.positions)
@@ -248,17 +252,17 @@ class YumiProgram(RobotProgram):
     def add_gripper(self, task_name):
         self.gripper = YumiGripper(task=task_name, sm_runner=self.sm_runner)
 
-    def write_motion(self, plan):
+    def write_motion(self, plan, motion_sup):
         formatter = FormatTrajectory(num_points=25, fk=self.fk)
-        content = formatter.format(plan)
+        content = formatter.format(plan, motion_sup)
         self.sm_runner.set_file_contents(self.traj_file, content)
 
     def execute_motion(self, **kwargs):
         self.sm_runner.run_rapid(nonblocking=False, **kwargs)
     
-    def move_generic(self, motion_program, debug=False, **kwargs):
+    def move_generic(self, motion_program, debug=False, motion_sup=True, **kwargs):
         plan = motion_program.run(debug)
-        self.write_motion(plan)
+        self.write_motion(plan, motion_sup)
         # rospy.sleep(0.5)
         self.execute_motion(**kwargs)
     
@@ -274,8 +278,8 @@ class YumiL(YumiProgram):
 
         self.add_gripper(self.task_name)
     
-    def move(self, motion_program, debug=False):
-        self.move_generic(motion_program, debug, l_routine="execute")
+    def move(self, motion_program, debug=False, **kwargs):
+        self.move_generic(motion_program, debug, l_routine="execute", **kwargs)
 
 class YumiR(YumiProgram):
     def __init__(self) -> None:
@@ -288,8 +292,8 @@ class YumiR(YumiProgram):
 
         self.add_gripper(self.task_name)
 
-    def move(self, motion_program, debug=False):
-        self.move_generic(motion_program, debug, r_routine="execute")
+    def move(self, motion_program, debug=False, **kwargs):
+        self.move_generic(motion_program, debug, r_routine="execute", **kwargs)
 
 class YumiGripper:
 

@@ -42,8 +42,8 @@ class ProgramRunner:
             self.motion_program.configure(**kwargs)
 
 
-    def move(self, debug=False):
-        self.robot_program.move(self.motion_program, debug)
+    def move(self, debug=False, **kwargs):
+        self.robot_program.move(self.motion_program, debug, **kwargs)
 
 
     def locate_target(self, alias):
@@ -81,17 +81,17 @@ class YumiRunner:
     def locate_r_target(self, alias):
         self.yumi_r_program.locate_target(alias)
     
-    def move_l(self, debug=False):
-        self.yumi_l_program.move(debug)
+    def move_l(self, debug=False, **kwargs):
+        self.yumi_l_program.move(debug, **kwargs)
     
-    def move_r(self, debug=False):
-        self.yumi_r_program.move(debug)
+    def move_r(self, debug=False, **kwargs):
+        self.yumi_r_program.move(debug, **kwargs)
     
-    def move(self, debug=False):
+    def move(self, debug=False, **kwargs):
         self.yumi_l_program.robot_program.move_generic(self.yumi_l_program.motion_program, 
-                                                       debug)
+                                                       debug, **kwargs)
         self.yumi_r_program.robot_program.move_generic(self.yumi_r_program.motion_program, 
-                                                       debug)
+                                                       debug, **kwargs)
         self.yumi_l_program.robot_program.execute_motion(r_routine="execute",
                                                         l_routine="execute")
 
