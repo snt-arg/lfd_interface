@@ -31,11 +31,15 @@ if __name__ == "__main__":
         runner.set_motion_mode("dmp")
         runner.configure_motion(duration_scale=duration_scale)
 
-        runner.configure_motion(demo_name="smoothyrtest")
-        runner.move()
+        runner.configure_motion(demo_name="smoothyrhometoconeupdate")
+        runner.move(debug=True)
 
-        runner.configure_motion(demo_name="smoothyrtestreverse")        
-        runner.move()
+        runner.configure_motion(demo_name="smoothyrhometoconeupdatereverse")
+        runner.move(debug=True)
+
+
+        # runner.configure_motion(demo_name="smoothyrtestreverse")        
+        # runner.move()
 
         # runner.configure_motion(demo_name="smoothyrtest")
         # runner.move()
@@ -50,18 +54,42 @@ if __name__ == "__main__":
         runner.set_camera() 
 
 
-        # runner.configure_motion(demo_name="smoothylhometoscrewreverse")        
+        # ###################
+        # runner.gripper.moveto("10")
+        # runner.configure_motion(demo_name="smoothylhometoscrewupdate")
+        # runner.locate_target("screw")
         # runner.move(debug=True)
+        # runner.gripper.grasp("close")
+        # ###################
 
+        # ##################
+        # runner.configure_motion(demo_name="smoothylscrewmountupdate")        
+        # runner.move(debug=True)
+        # runner.gripper.grasp("open")
+        # runner.gripper.grasp("close")
+        # ###################
 
-        runner.configure_motion(demo_name="smoothylhometoscrewupdate")
-        runner.locate_target("screw")
+        ###################
+        runner.configure_motion(demo_name="smoothylscrewtoringupdate")
+        runner.locate_target("ring")        
         runner.move(debug=True)
+        ###################
 
 
-        runner.configure_motion(demo_name="smoothylhometoscrewupdatereverse")        
+        ###################
+        runner.configure_motion(demo_name="smoothylscrewtoringupdatereverse")        
         runner.move(debug=True)
+        ###################
 
+        # ###################
+        # runner.configure_motion(demo_name="smoothylscrewmountupdatereverse")        
+        # runner.move(debug=True)
+        # ###################
+
+        # ###################
+        # runner.configure_motion(demo_name="smoothylhometoscrewupdatereverse")        
+        # runner.move(debug=True)
+        # ###################
 
 
     elif robot=="fr3":
