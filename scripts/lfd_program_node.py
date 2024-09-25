@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
         yumi_runner.configure_l_motion(demo_name="smoothylhometoscrew")
         yumi_runner.configure_r_motion(demo_name="smoothyrtest")
-        yumi_runner.move()
+        yumi_runner.move(motion_sup=False)
 
         yumi_runner.configure_l_motion(demo_name="smoothylhometoscrewreverse")
         yumi_runner.configure_r_motion(demo_name="smoothyrtestreverse")
@@ -31,8 +31,66 @@ if __name__ == "__main__":
         runner.set_motion_mode("dmp")
         runner.configure_motion(duration_scale=duration_scale)
 
+        runner.gripper.moveto("20")
         runner.configure_motion(demo_name="smoothyrhometoconeupdate")
         runner.move(debug=True)
+
+        runner.gripper.grasp("close")
+        runner.configure_motion(demo_name="smoothyrmoveconeoneupdate", duration_scale=3)
+        runner.move(debug=True, motion_sup=False)
+
+        runner.configure_motion(demo_name="smoothyrmoveconetwoupdate", duration_scale=duration_scale)
+        runner.move(debug=True)
+
+        # runner.gripper.moveto("10")
+        # runner.configure_motion(demo_name="smoothyrmountconeupdatereverse")
+        # runner.move(debug=True)
+
+        runner.configure_motion(demo_name="smoothyrmountconeupdate")
+        runner.move(debug=True)
+        runner.gripper.moveto("10")
+
+
+        runner.configure_motion(demo_name="smoothyrinsertringoneupdate")
+        runner.move(debug=True)
+        runner.gripper.moveto("0")
+
+        runner.configure_motion(demo_name="smoothyrinsertringtwoupdate", duration_scale=2)
+        runner.move(debug=True, motion_sup=False)
+
+        runner.gripper.grasp("close")
+        runner.configure_motion(demo_name="smoothyrremovescrewoneupdate")
+        runner.move(debug=True) 
+
+
+        runner.configure_motion(demo_name="smoothyrputbackconeupdate", duration_scale=duration_scale)
+        runner.move(debug=True)
+        runner.gripper.moveto("4")
+
+        runner.configure_motion(demo_name="smoothyrpickscrewupdatereverse")
+        runner.move(debug=True)        
+
+
+        runner.configure_motion(demo_name="smoothyrremovescrewoneupdatereverse")
+        runner.move(debug=True)
+
+        runner.gripper.grasp("close")
+        runner.configure_motion(demo_name="smoothyrremovescrewoneupdate")
+        runner.move(debug=True)        
+
+        runner.configure_motion(demo_name="smoothyrremovescrewtwoupdate")
+        runner.move(debug=True)          
+
+
+        #####################################
+
+        runner.configure_motion(demo_name="smoothyrmoveconetwoupdatereverse")
+        runner.move(debug=True)
+
+        runner.configure_motion(demo_name="smoothyrmoveconeoneupdatereverse")
+        runner.move(debug=True)
+        runner.gripper.moveto("20")
+
 
         runner.configure_motion(demo_name="smoothyrhometoconeupdatereverse")
         runner.move(debug=True)
@@ -54,32 +112,48 @@ if __name__ == "__main__":
         runner.set_camera() 
 
 
-        # ###################
-        # runner.gripper.moveto("10")
-        # runner.configure_motion(demo_name="smoothylhometoscrewupdate")
-        # runner.locate_target("screw")
-        # runner.move(debug=True)
-        # runner.gripper.grasp("close")
-        # ###################
+        ###################
+        runner.gripper.moveto("10")
+        runner.configure_motion(demo_name="smoothylhometoscrewupdate")
+        runner.locate_target("screw")
+        runner.move(debug=True)
+        runner.gripper.grasp("close")
+        ###################
 
-        # ##################
-        # runner.configure_motion(demo_name="smoothylscrewmountupdate")        
-        # runner.move(debug=True)
-        # runner.gripper.grasp("open")
-        # runner.gripper.grasp("close")
-        # ###################
+        ##################
+        runner.configure_motion(demo_name="smoothylscrewmountupdate")        
+        runner.move(debug=True)
+        runner.gripper.grasp("open")
+        rospy.sleep(0.5)
+        runner.gripper.grasp("close")
+        ###################
 
         ###################
         runner.configure_motion(demo_name="smoothylscrewtoringupdate")
         runner.locate_target("ring")        
         runner.move(debug=True)
+        runner.gripper.moveto("1.5")
         ###################
 
 
+        # ###################
+        # runner.configure_motion(demo_name="smoothylscrewtoringupdatereverse")        
+        # runner.move(debug=True)
+        # ###################
+
         ###################
-        runner.configure_motion(demo_name="smoothylscrewtoringupdatereverse")        
+        runner.configure_motion(demo_name="smoothylringmountupdate")        
         runner.move(debug=True)
         ###################
+
+
+        # ###################
+        # runner.gripper.grasp("close")
+        # runner.configure_motion(demo_name="smoothylringmountupdatereverse")
+        # runner.locate_target("ring")
+        # runner.move(debug=True)
+        # runner.gripper.moveto("1.5")
+        # ###################
 
         # ###################
         # runner.configure_motion(demo_name="smoothylscrewmountupdatereverse")        
