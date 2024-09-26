@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant User
+    participant DW as DMPWrapper
+
+    User->>DW: train callback
+    activate DW
+    Note over User,DW: service: /train_demonstration
+    DW->>DW: train()
+    DW-->>User: success
+    deactivate DW
+
+    User->>DW: plan callback
+    activate DW
+    Note over User,DW: service: /plan_lfd
+    DW->>DW: plan()
+    DW-->>User: planned trajectory
+    deactivate DW

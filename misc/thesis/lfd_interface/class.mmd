@@ -1,0 +1,46 @@
+classDiagram
+%% LFD Interface
+    class LFDPlanner {
+        -String demo_name
+        -int duration
+        -JointTrajectory goal
+        %% +init(demo_name, duration, goal):void
+        +runViz(): JointTrajectory
+        +runExec(): JointTrajectory
+        -visualizePlan(): void
+        -getPlan(start,goal):void
+    }
+    class LFDRecorder {
+        -int record_rate
+        +run(demo_name):void
+        -robotHasMoved():bool
+    }
+    class LFDTrainer {
+        -String demo_name
+        -loadDemonstration()
+        -trainDemonstration()
+        +run()
+    }
+    class MoveitUtil {
+        +getMoveGroup()
+        +getVisualTools()
+        +currentJointState()
+        +visualizeTrajectory()
+        +jointToPose()
+        +currentPose()
+        +VisualizePosePath()
+        +PlanPath()
+        +executePath()
+        +PlanJointAction()
+    }
+    class LFDPipeline {
+        +run()
+    }
+
+    LFDRecorder ..> MoveitUtil
+    LFDPlanner ..> MoveitUtil
+    LFDPipeline ..> MoveitUtil
+    LFDPipeline ..> LFDTrainer
+    LFDPipeline ..> LFDPlanner
+    LFDPipeline ..> LFDRecorder
+

@@ -1,0 +1,52 @@
+classDiagram
+    class HandEye {
+        +data_collector
+        +solver
+    }
+    class Calibration {
+        +transform()
+        -_fill_pose_template()
+        -_rotate_around_z()
+        -_normalize_angle()
+    }
+
+    class Cognex {
+        -ip
+        -credentials
+        +connect()
+        +read(object)
+        -switch_job()
+    }
+    %% HandEye
+    class DataCollection {
+        +read_robot_pose()
+        +read_camera_pose()
+    }
+
+    class Solver {
+        +solve()
+        +calculate_transformation()
+    }
+
+    class CameraServer {
+        +run()
+    }
+
+    class CameraConfig {
+        +transformation_matrix
+        +angle_offset
+        +symmetry
+    }
+
+    class Camera {
+        +connect()
+        +read(object)
+    }
+
+    CameraConfig ..> Calibration
+    HandEye ..> DataCollection
+    HandEye ..> Solver
+    Camera <|-- Cognex
+    CameraServer ..> Camera
+    Camera ..> CameraConfig
+    %% Solver --> CameraConfig : updates

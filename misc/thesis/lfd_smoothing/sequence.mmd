@@ -1,0 +1,31 @@
+sequenceDiagram
+    participant User
+    participant TS as TrajectorySmoother
+    participant DR as DrakeRobot
+    participant RC as RobotConfig
+    participant TO as TrajectoryOptimizer
+    participant SO as SingleOptimizer
+    participant LS as LFDStorage
+
+    User ->> TS: initialize(config)
+    activate TS
+    Note over User,TS: start smoothing
+    TS ->> LS: load demonstration
+    Note over TS,LS: service: /get_demonstration
+    LS -->> TS: demonstration
+    TS ->> TS: filter_demonstration()
+    TS ->> DR: create robot model
+    TS ->> RC: create robot config
+    deactivate TS
+    Note over TS: time optimization
+    activate TS
+    TS ->> TO: run(robot,config)
+    TO -->> TS: timings
+    deactivate TS
+    Note over TS: trajectory generation
+    activate TS
+    TS ->> SO: run(robot,config)
+    SO -->> TS: optimal demonstration trajectory
+    deactivate TS
+    TS ->> LS: export smoooth demonstration
+    Note over TS,LS: topic: /save_demonstration
