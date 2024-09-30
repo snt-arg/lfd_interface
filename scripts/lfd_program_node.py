@@ -17,50 +17,197 @@ if __name__ == "__main__":
         yumi_runner = YumiRunner()
         yumi_runner.set_motion_mode("dmp")
         yumi_runner.configure_motion(duration_scale=duration_scale)
+        yumi_runner.yumi_l_program.set_camera()
+        debug=False
 
-        yumi_runner.configure_l_motion(demo_name="smoothylhometoscrew")
-        yumi_runner.configure_r_motion(demo_name="smoothyrtest")
-        yumi_runner.move(motion_sup=False)
+        # YUMI LEFT
+        ###################
+        yumi_runner.gripper_l.moveto("10")
+        yumi_runner.configure_l_motion(demo_name="smoothylhometoscrewupdate")
+        yumi_runner.locate_l_target("screw")
+        yumi_runner.move_l(debug=debug)
+        yumi_runner.gripper_l.grasp("close")
+        ###################
 
-        yumi_runner.configure_l_motion(demo_name="smoothylhometoscrewreverse")
-        yumi_runner.configure_r_motion(demo_name="smoothyrtestreverse")
-        yumi_runner.move() 
+        while True:
+            # YUMI LEFT
+            ##################
+            yumi_runner.configure_l_motion(demo_name="smoothylscrewmountupdate")        
+            yumi_runner.move_l(debug=debug)
+            yumi_runner.gripper_l.grasp("open")
+            rospy.sleep(0.5)
+            yumi_runner.gripper_l.grasp("close")
+            ###################
+
+            # YUMI RIGHT
+            #################
+            yumi_runner.gripper_r.moveto("20")
+            yumi_runner.configure_r_motion(demo_name="smoothyrhometoconeupdate")
+            yumi_runner.move_r(debug=debug)
+            #################
+
+            # YUMI LEFT
+            ###################
+            yumi_runner.configure_l_motion(demo_name="smoothylscrewtoringupdate")
+            yumi_runner.locate_l_target("ring")        
+            yumi_runner.move_l(debug=debug)
+            yumi_runner.gripper_l.moveto("2")
+            # yumi_runner.gripper_l.grasp("open")
+            ###################
+
+            # YUMI RIGHT
+            #################
+            yumi_runner.gripper_r.grasp("close")
+            yumi_runner.configure_r_motion(demo_name="smoothyrmoveconeoneupdate", duration_scale=3)
+            yumi_runner.move_r(debug=debug, motion_sup=False)
+            yumi_runner.configure_r_motion(duration_scale=duration_scale)
+            #################
+
+            # YUMI RIGHT
+            #################
+            yumi_runner.configure_r_motion(demo_name="smoothyrmoveconetwoupdate")
+            yumi_runner.move_r(debug=debug)
+            #################
+            
+            
+            # YUMI LEFT
+            ###################
+            yumi_runner.configure_l_motion(demo_name="smoothylringmountupdate")        
+            yumi_runner.move_l(debug=debug)
+            yumi_runner.gripper_l.grasp("close")
+            ###################
+
+    #######################################################################
+
+
+            # YUMI RIGHT
+            #################
+            yumi_runner.configure_r_motion(demo_name="smoothyrmountconeupdate")
+            yumi_runner.move_r(debug=debug)
+            yumi_runner.gripper_r.moveto("10")
+            #################
+
+            # YUMI RIGHT
+            #################
+            yumi_runner.configure_r_motion(demo_name="smoothyrinsertringoneupdate")
+            yumi_runner.move_r(debug=debug)
+            yumi_runner.gripper_r.moveto("0.5")
+            #################
+
+            # YUMI RIGHT
+            #################
+            yumi_runner.configure_r_motion(demo_name="smoothyrinsertringtwoupdate")
+            yumi_runner.move_r(debug=debug, motion_sup=False)
+            #################
+
+            # YUMI RIGHT
+            #################
+            yumi_runner.gripper_r.moveto("5")
+            yumi_runner.yumi_r_program.robot_program.execute_motion(r_routine="removecone")
+            # yumi_runner.gripper_r.grasp("close")
+            #################
+
+            # YUMI RIGHT
+            #################
+            yumi_runner.configure_r_motion(demo_name="smoothyrputbackconeupdate")
+            yumi_runner.move_r(debug=debug)
+            yumi_runner.gripper_r.moveto("5")
+            #################
+
+            # YUMI RIGHT
+            #################
+            yumi_runner.configure_r_motion(demo_name="smoothyrpickscrewupdatereverse")
+            yumi_runner.move_r(debug=debug)        
+            #################
+
+            # YUMI RIGHT
+            #################
+            yumi_runner.configure_r_motion(demo_name="smoothyrremovescrewoneupdatereverse")
+            yumi_runner.move_r(debug=debug)
+            #################
+
+            # YUMI RIGHT
+            #################
+            yumi_runner.gripper_r.grasp("close")
+            yumi_runner.configure_r_motion(demo_name="smoothyrremovescrewoneupdate")
+            yumi_runner.move_r(debug=debug)        
+            #################
+
+            # YUMI RIGHT
+            #################
+            yumi_runner.configure_r_motion(demo_name="smoothyrremovescrewtwoupdate")
+            yumi_runner.move_r(debug=debug)
+            yumi_runner.gripper_r.moveto("10")   
+            #################
+            rospy.sleep(0.5)
+            
+            # YUMI LEFT
+            ###################
+            yumi_runner.gripper_l.moveto("10")
+            yumi_runner.configure_l_motion(demo_name="smoothylringtoscrewloopupdatereverse")  
+            yumi_runner.locate_l_target("screw")      
+            yumi_runner.move_l(debug=debug)
+            yumi_runner.gripper_l.grasp("close")
+            ###################
+            
+            # YUMI RIGHT
+            #################
+            yumi_runner.configure_r_motion(demo_name="smoothyrgobackhomeupdate")
+            yumi_runner.move_r(debug=debug) 
+            #################
+
+########################################################################################
+
+
+
+
+
+
+
+
+        # yumi_runner.configure_l_motion(demo_name="smoothylhometoscrew")
+        # yumi_runner.configure_r_motion(demo_name="smoothyrtest")
+        # yumi_runner.move(motion_sup=False)
+
+        # yumi_runner.configure_l_motion(demo_name="smoothylhometoscrewreverse")
+        # yumi_runner.configure_r_motion(demo_name="smoothyrtestreverse")
+        # yumi_runner.move() 
 
     elif robot=="yumi_r":
         runner = ProgramRunner(robot="yumi_r")
         runner.set_motion_mode("dmp")
         runner.configure_motion(duration_scale=duration_scale)
 
-        runner.gripper.moveto("20")
-        runner.configure_motion(demo_name="smoothyrhometoconeupdate")
-        runner.move(debug=True)
-
-        runner.gripper.grasp("close")
-        runner.configure_motion(demo_name="smoothyrmoveconeoneupdate", duration_scale=3)
-        runner.move(debug=True, motion_sup=False)
-
-        runner.configure_motion(demo_name="smoothyrmoveconetwoupdate", duration_scale=duration_scale)
-        runner.move(debug=True)
-
-        # runner.gripper.moveto("10")
-        # runner.configure_motion(demo_name="smoothyrmountconeupdatereverse")
+        # runner.gripper.moveto("20")
+        # runner.configure_motion(demo_name="smoothyrhometoconeupdate")
         # runner.move(debug=True)
 
-        runner.configure_motion(demo_name="smoothyrmountconeupdate")
-        runner.move(debug=True)
-        runner.gripper.moveto("10")
+        # runner.gripper.grasp("close")
+        # runner.configure_motion(demo_name="smoothyrmoveconeoneupdate", duration_scale=3)
+        # runner.move(debug=True, motion_sup=False)
+
+        # runner.configure_motion(demo_name="smoothyrmoveconetwoupdate", duration_scale=duration_scale)
+        # runner.move(debug=True)
 
 
-        runner.configure_motion(demo_name="smoothyrinsertringoneupdate")
-        runner.move(debug=True)
-        runner.gripper.moveto("0")
+        # runner.configure_motion(demo_name="smoothyrmountconeupdate")
+        # runner.move(debug=True)
+        # runner.gripper.moveto("10")
 
-        runner.configure_motion(demo_name="smoothyrinsertringtwoupdate", duration_scale=2)
-        runner.move(debug=True, motion_sup=False)
 
-        runner.gripper.grasp("close")
-        runner.configure_motion(demo_name="smoothyrremovescrewoneupdate")
-        runner.move(debug=True) 
+        # runner.configure_motion(demo_name="smoothyrinsertringoneupdate")
+        # runner.move(debug=True)
+        # runner.gripper.moveto("0.5")
+
+        # runner.configure_motion(demo_name="smoothyrinsertringtwoupdate", duration_scale=duration_scale)
+        # runner.move(debug=True, motion_sup=False)
+
+        # runner.gripper.moveto("5")
+        # runner.robot_program.execute_motion(r_routine="removecone")
+        # runner.gripper.grasp("close")
+
+        # runner.configure_motion(demo_name="smoothyrremovescrewoneupdate")
+        # runner.move(debug=True) 
 
 
         runner.configure_motion(demo_name="smoothyrputbackconeupdate", duration_scale=duration_scale)
@@ -81,19 +228,21 @@ if __name__ == "__main__":
         runner.configure_motion(demo_name="smoothyrremovescrewtwoupdate")
         runner.move(debug=True)          
 
+        runner.configure_motion(demo_name="smoothyrgobackhomeupdate")
+        runner.move(debug=True)  
 
         #####################################
 
-        runner.configure_motion(demo_name="smoothyrmoveconetwoupdatereverse")
-        runner.move(debug=True)
+        # runner.configure_motion(demo_name="smoothyrmoveconetwoupdatereverse")
+        # runner.move(debug=True)
 
-        runner.configure_motion(demo_name="smoothyrmoveconeoneupdatereverse")
-        runner.move(debug=True)
-        runner.gripper.moveto("20")
+        # runner.configure_motion(demo_name="smoothyrmoveconeoneupdatereverse")
+        # runner.move(debug=True)
+        # runner.gripper.moveto("20")
 
 
-        runner.configure_motion(demo_name="smoothyrhometoconeupdatereverse")
-        runner.move(debug=True)
+        # runner.configure_motion(demo_name="smoothyrhometoconeupdatereverse")
+        # runner.move(debug=True)
 
 
         # runner.configure_motion(demo_name="smoothyrtestreverse")        
