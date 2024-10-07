@@ -1,0 +1,50 @@
+flowchart TD
+    A((User))
+    R((Robot))
+
+    subgraph Recorder[ ]
+        direction LR
+        LR[LFD Recorder]
+        LSM[LFD Smoothing]
+        LR --> LSM
+    end
+
+    subgraph Program[ ]
+        direction TB
+        HI[High-level Instructions]
+        LP[LFD Program]
+        HI --> LP
+    end
+
+    subgraph Interface[ ]
+        direction TB
+        LI[LFD Interface]
+        LD[LFD DMP]
+        LC[LFD Camera]
+        LI --> LD
+        LI --> LC
+    end
+
+    LST[LFD Storage]
+
+    %% Main flow
+    A --> LR
+    A --> HI
+    LSM -.-> LST
+    LP --> LI
+    LI -.-> LST
+    LI -.-> R
+    LR -.-> R
+
+    %% Invisible nodes for spacing
+    classDef invisible fill:none,stroke:none;
+    I1[ ]
+    I2[ ]
+    class I1,I2 invisible;
+
+    %% %% Adjusting positions
+    %% Recorder --> I1
+    %% I1 --> Program
+    %% Program --> I2
+    %% I2 --> Interface
+

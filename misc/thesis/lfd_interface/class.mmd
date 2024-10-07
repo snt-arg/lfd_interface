@@ -1,22 +1,20 @@
 classDiagram
-%% LFD Interface
     class LFDPlanner {
-        -String demo_name
-        -int duration
-        -JointTrajectory goal
-        %% +init(demo_name, duration, goal):void
-        +runViz(): JointTrajectory
-        +runExec(): JointTrajectory
-        -visualizePlan(): void
-        -getPlan(start,goal):void
+        -demo_name
+        -duration
+        -goal
+        +runViz()
+        +runExec()
+        -visualizePlan()
+        -getPlan()
     }
     class LFDRecorder {
-        -int record_rate
-        +run(demo_name):void
-        -robotHasMoved():bool
+        -record_rate
+        +run(demo_name)
+        -robotHasMoved()
     }
     class LFDTrainer {
-        -String demo_name
+        -demo_name
         -loadDemonstration()
         -trainDemonstration()
         +run()

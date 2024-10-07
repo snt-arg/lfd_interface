@@ -3,12 +3,12 @@ classDiagram
         +data_collector
         +solver
     }
-    class Calibration {
-        +transform()
-        -_fill_pose_template()
-        -_rotate_around_z()
-        -_normalize_angle()
-    }
+    %% class Calibration {
+    %%     +transform()
+    %%     -_fill_pose_template()
+    %%     -_rotate_around_z()
+    %%     -_normalize_angle()
+    %% }
 
     class Cognex {
         -ip
@@ -43,7 +43,7 @@ classDiagram
         +read(object)
     }
 
-    CameraConfig ..> Calibration
+    %% CameraConfig ..> Calibration
     HandEye ..> DataCollection
     HandEye ..> Solver
     Camera <|-- Cognex

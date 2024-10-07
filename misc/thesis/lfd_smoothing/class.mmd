@@ -24,24 +24,6 @@ classDiagram
 
     class RobotConfig {
         +parse()
-        +add_initial_guess()
-        +add_solver()
-        +demo
-        +thr_translation
-        +thr_translation
-        +bspline_order
-        +overlap
-        +vel_bound
-        +acc_bound
-        +jerk_bound
-        +coeff_duration
-        +coeff_jerk
-        +coeff_joint_cp_error
-        +tol_translation
-        +tol_rotation
-        +init_guess_cps
-        +waypoints_ts
-        +solver
     }
 
     class DrakeRobot {
@@ -52,8 +34,8 @@ classDiagram
     
 
     class IKSolver {
-        +run(position, orientation, q_init=None)
-        -visualize(q)
+        +run(position, orientation)
+        -visualize()
         -config
         -robot
     }

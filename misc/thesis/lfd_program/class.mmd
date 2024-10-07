@@ -27,36 +27,36 @@ classDiagram
     }
 
     %% ABB Program
-    class YumiProgram {
-        +add_gripper()
-        +write_motion()
-        +execute_motion()
-        +move_generic()
-    }
+    %% class YumiProgram {
+    %%     +add_gripper()
+    %%     +write_motion()
+    %%     +execute_motion()
+    %%     +move_generic()
+    %% }
 
-    class YumiL {
-        +move()
-    }
+    %% class YumiL {
+    %%     +move()
+    %% }
 
-    class YumiR {
-        +move()
-    }
+    %% class YumiR {
+    %%     +move()
+    %% }
 
-    class YumiGripper {
-        +moveto()
-        +grasp()
-    }
+    %% class YumiGripper {
+    %%     +moveto()
+    %%     +grasp()
+    %% }
 
     %% Franka Program
-    class FR3Program {
-        +add_gripper()
-        +move()
-    }
+    %% class FR3Program {
+    %%     +add_gripper()
+    %%     +move()
+    %% }
 
-    class FrankaGripper {
-        +moveto()
-        +grasp()
-    }
+    %% class FrankaGripper {
+    %%     +moveto()
+    %%     +grasp()
+    %% }
 
     %% Util
     class ForwardKinematics {
@@ -77,39 +77,40 @@ classDiagram
         +locate_target()
     }
 
-    class YumiRunner {
-        +set_motion_mode()
-        +configure_motion()
-        +configure_l_motion()
-        +configure_r_motion()
-        +locate_l_target()
-        +locate_r_target()
-        +move_l()
-        +move_r()
-        +move()
-    }
+    %% class YumiRunner {
+    %%     +set_motion_mode()
+    %%     +configure_motion()
+    %%     +configure_l_motion()
+    %%     +configure_r_motion()
+    %%     +locate_l_target()
+    %%     +locate_r_target()
+    %%     +move_l()
+    %%     +move_r()
+    %%     +move()
+    %% }
 
     class RobotGripper {
         +moveto()
         +grasp()
     }
 
-    ProgramRunner <|-- YumiRunner
+    %% ProgramRunner <|-- YumiRunner
 
     ProgramRunner ..> CameraProgram
     ProgramRunner ..> MotionProgram
     ProgramRunner ..> RobotProgram
 
     MotionProgram <|-- DMPProgram
-    RobotProgram <|-- YumiProgram
-    RobotProgram <|-- FR3Program
-    YumiProgram <|-- YumiL 
-    YumiProgram <|-- YumiR
-    RobotGripper <|-- YumiGripper
-    RobotGripper <|-- FrankaGripper
+    %% RobotProgram <|-- YumiProgram
+    %% RobotProgram <|-- FR3Program
+    %% YumiProgram <|-- YumiL 
+    %% YumiProgram <|-- YumiR
+    %% RobotGripper <|-- YumiGripper
+    %% RobotGripper <|-- FrankaGripper
     RobotProgram ..> ForwardKinematics
     RobotProgram ..> InverseKinematics
-    YumiL ..> YumiGripper
-    YumiR ..> YumiGripper
+    %% YumiL ..> YumiGripper
+    %% YumiR ..> YumiGripper
     %% YumiProgram ..> YumiGripper
-    FR3Program ..> FrankaGripper
+    %% FR3Program ..> FrankaGripper
+    RobotProgram ..> RobotGripper
