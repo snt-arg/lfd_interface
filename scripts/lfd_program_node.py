@@ -30,38 +30,27 @@ if __name__ == "__main__":
         ###################
 
         while True:
-            # YUMI LEFT
-            ##################
-            yumi_runner.configure_l_motion(demo_name="smoothylscrewmountupdate")        
-            yumi_runner.move_l(debug=debug)
-            yumi_runner.gripper_l.grasp("open")
-            rospy.sleep(0.5)
-            yumi_runner.gripper_l.grasp("close")
-            ###################
-
-            # YUMI RIGHT
-            #################
+            #############################################
+            rospy.sleep(0.3)
             yumi_runner.gripper_r.moveto("20")
+            yumi_runner.configure_l_motion(demo_name="smoothylscrewmountupdate")        
             yumi_runner.configure_r_motion(demo_name="smoothyrhometoconeupdate")
-            yumi_runner.move_r(debug=debug)
-            #################
+            yumi_runner.move(debug=False)
+            yumi_runner.gripper_l.grasp("open")
+            rospy.sleep(0.3)
+            yumi_runner.gripper_l.grasp("close")
+            #############################################
 
-            # YUMI LEFT
-            ###################
-            yumi_runner.configure_l_motion(demo_name="smoothylscrewtoringupdate")
-            yumi_runner.locate_l_target("ring")        
-            yumi_runner.move_l(debug=debug)
-            yumi_runner.gripper_l.moveto("2")
-            # yumi_runner.gripper_l.grasp("open")
-            ###################
-
-            # YUMI RIGHT
-            #################
+            #############################################
             yumi_runner.gripper_r.grasp("close")
+            yumi_runner.configure_l_motion(demo_name="smoothylscrewtoringupdate")
             yumi_runner.configure_r_motion(demo_name="smoothyrmoveconeoneupdate", duration_scale=3)
-            yumi_runner.move_r(debug=debug, motion_sup=False)
+            yumi_runner.locate_l_target("ring")        
+            yumi_runner.move(debug=False)
+            yumi_runner.gripper_l.moveto("2")
             yumi_runner.configure_r_motion(duration_scale=duration_scale)
-            #################
+            #############################################
+
 
             # YUMI RIGHT
             #################
@@ -77,7 +66,7 @@ if __name__ == "__main__":
             yumi_runner.gripper_l.grasp("close")
             ###################
 
-    #######################################################################
+#     #######################################################################
 
 
             # YUMI RIGHT
@@ -139,24 +128,24 @@ if __name__ == "__main__":
             yumi_runner.move_r(debug=debug)
             yumi_runner.gripper_r.moveto("10")   
             #################
-            rospy.sleep(0.5)
+            rospy.sleep(0.3)
             
             # YUMI LEFT
             ###################
             yumi_runner.gripper_l.moveto("10")
             yumi_runner.configure_l_motion(demo_name="smoothylringtoscrewloopupdatereverse")  
+            yumi_runner.configure_r_motion(demo_name="smoothyrgobackhomeupdate")
             yumi_runner.locate_l_target("screw")      
-            yumi_runner.move_l(debug=debug)
+            yumi_runner.move(debug=False)
             yumi_runner.gripper_l.grasp("close")
             ###################
             
             # YUMI RIGHT
             #################
-            yumi_runner.configure_r_motion(demo_name="smoothyrgobackhomeupdate")
-            yumi_runner.move_r(debug=debug) 
+            # yumi_runner.move_r(debug=debug) 
             #################
 
-########################################################################################
+# ########################################################################################
 
 
 
