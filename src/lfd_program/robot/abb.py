@@ -253,7 +253,7 @@ class YumiProgram(RobotProgram):
         self.gripper = YumiGripper(task=task_name, sm_runner=self.sm_runner)
 
     def write_motion(self, plan, motion_sup):
-        formatter = FormatTrajectory(num_points=25, fk=self.fk)
+        formatter = FormatTrajectory(num_points=10, fk=self.fk)
         content = formatter.format(plan, motion_sup)
         self.sm_runner.set_file_contents(self.traj_file, content)
 
