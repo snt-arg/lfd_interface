@@ -38,6 +38,6 @@ private:
 public:
     LFDRecorder(MoveitUtil & moveit_util);
     ~LFDRecorder();
-    void run(std::string demonstration_name);
+    void run(std::string demonstration_name, std::string robot_name, std::string description);
     bool STOP_FLAG = false;
 };

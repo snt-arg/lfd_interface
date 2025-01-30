@@ -1,9 +1,10 @@
 <launch>
 
     <arg name="name" default="testdemo"/>
-    <arg name="config" default="default"/>
+    <arg name="robot_name" default="default"/>
+    <arg name="description" default="no description"/>
 
-    <arg name="config_file" value="$(find lfd_interface)/config/demonstrations/$(arg config).yaml"/>
+    <arg name="config_file" value="$(find lfd_interface)/config/demonstrations/$(arg robot_name).yaml"/>
 
     <node name="keyboard_command" pkg="lfd_interface" type="keyboard_command.py">
     </node>
@@ -12,6 +13,8 @@
     
     <node name="lfd_recorder_node" pkg="lfd_interface" type="lfd_recorder_node" output="screen">
         <param name="demonstration_name" value="$(arg name)"/>
+        <param name="robot_name" value="$(arg robot_name)"/>
+        <param name="description" value="$(arg description)"/>
         <rosparam command="load" file="$(arg config_file)" />
     </node>
 

@@ -28,7 +28,7 @@ void LFDRecorder::saveDemonstration()
     pub_save_demonstration_.publish(demonstration_);
 }
 
-void LFDRecorder::run(std::string demonstration_name)
+void LFDRecorder::run(std::string demonstration_name, std::string robot_name, std::string description)
 {
     STOP_FLAG=false;
     demonstration_.joint_trajectory.points.clear();
@@ -40,6 +40,8 @@ void LFDRecorder::run(std::string demonstration_name)
 
     demonstration_.joint_trajectory.joint_names = moveit_util_.getMoveGroup()->getJointNames();
     demonstration_.name = demonstration_name;
+    demonstration_.robot_name = robot_name;
+    demonstration_.description = description;
 
     auto visual_tools = moveit_util_.getVisualTools();
 
@@ -82,14 +84,13 @@ void LFDRecorder::run(std::string demonstration_name)
 
         demonstration_.joint_trajectory.points.push_back(current_joint_state);
         demonstration_.pose_trajectory.points.push_back(current_pose);
-        saveDemonstration();
         visual_tools->deleteAllMarkers();
         // moveit_util_.visualizeJointTrajectory(demonstration_.joint_trajectory);
         moveit_util_.visualizePosePath(demonstration_.pose_trajectory);
 
         loop_rate.sleep();
     }
-    
+    saveDemonstration();
 }
 
 
