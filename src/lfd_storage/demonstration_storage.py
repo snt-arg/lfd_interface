@@ -5,14 +5,95 @@ import os
 import rospy
 import pickle
 import re
+import psycopg2
+import json
+
+from sqlalchemy import (
+    create_engine, Column, Integer, Text, DateTime, ForeignKey, String, func, LargeBinary, Index
+)
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship, sessionmaker
 
 from lfd_interface.msg import DemonstrationMsg
 from lfd_interface.srv import GetDemonstration, GetDemonstrationRequest, GetDemonstrationResponse, DemoCount, DemoCountResponse
 
 
+Base = declarative_base()
+
+class RobotDB(Base):
+    __tablename__ = 'robots'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(Text, nullable=False)
+    config = Column(JSONB)
+    created_at = Column(DateTime, server_default=func.now())
+    
+    # Relationship to Demonstration (optional if you want easy access from Robot to Demonstrations)
+    demonstrations = relationship(
+        'DemonstrationDB',
+        back_populates='robot',
+        cascade='all, delete-orphan'
+    )
+    
+    # Option 1: Create index by passing 'index=True'
+    # name = Column(Text, nullable=False, index=True)
+    
+    # Option 2: Create an explicit index
+    __table_args__ = (
+        Index('idx_robot_name', 'name'),
+    )
+
+
+class DemonstrationDB(Base):
+    __tablename__ = 'demonstrations'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(Text, nullable=False)
+    robot_id = Column(Integer, ForeignKey('robots.id', ondelete='CASCADE'), nullable=False)
+    meta_data = Column(JSONB)
+    created_at = Column(DateTime, server_default=func.now())
+    
+    # Relationship to Robot
+    robot = relationship('RobotDB', back_populates='demonstrations')
+    
+    # Relationship to Trajectory (optional for easy access)
+    trajectories = relationship(
+        'TrajectoryDB',
+        back_populates='demonstration',
+        cascade='all, delete-orphan'
+    )
+    
+    __table_args__ = (
+        Index('idx_demo_name', 'name'),
+    )
+
+
+class TrajectoryDB(Base):
+    __tablename__ = 'trajectories'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    demo_id = Column(Integer, ForeignKey('demonstrations.id', ondelete='CASCADE'), nullable=False)
+    type = Column(String(50), nullable=False)
+    trajectory_data = Column(LargeBinary, nullable=False)
+    created_at = Column(DateTime, server_default=func.now())
+    
+    # Relationship to Demonstration
+    demonstration = relationship('DemonstrationDB', back_populates='trajectories')
+    
+    __table_args__ = (
+        Index('idx_trajectory_type', 'type'),
+    )
+
+
 class DemonstrationStorage(object):
 
     def __init__(self):
+        DATABASE_URL = "postgresql://postgres:postgres@localhost/robot_demos"
+        engine = create_engine(DATABASE_URL)
+        Base.metadata.create_all(engine)
+        Session = sessionmaker(bind=engine)
+        self.session = Session()
         self.dir_template = "demonstrations/{}"
         self.filename_template = "demonstrations/{}/{}.pickle"
         rospy.Subscriber("save_demonstration", DemonstrationMsg, self.subcb_save_trajectory)
@@ -41,16 +122,47 @@ class DemonstrationStorage(object):
         return self.filename_template.format(name[0],name[1])
 
 
-    def subcb_save_trajectory(self, msg : DemonstrationMsg):
-        filename = self.format_filename(msg.name) 
-        try:
+    def subcb_save_trajectory(self, demo_msg : DemonstrationMsg):
+        """
+        Saves a new demonstration and its serialized trajectory to the database using SQLAlchemy.
 
-            with open(filename, 'wb') as file:
-                pickle.dump(msg, file)
-    
-            rospy.logdebug("joint trajectory saved successfully at {}".format(os.getcwd() + filename))
-        except OSError as exception:
-            rospy.logerr(exception)
+        Args:
+            demo_msg (DemonstrationMsg): The ROS demonstration message.
+        """
+        try:
+            # Resolve robot ID from robot name
+            robot = self.session.query(RobotDB).filter_by(name=demo_msg.robot_name).first()
+            if not robot:
+                rospy.logerr(f"Robot with name '{demo_msg.robot_name}' does not exist.")
+                return
+
+            # Create a new demonstration entry
+            demo = DemonstrationDB(
+                name=demo_msg.name,
+                robot_id=robot.id,
+                meta_data={"description": demo_msg.description}  # Example metadata
+            )
+            self.session.add(demo)
+            self.session.commit()
+
+            # Serialize the demonstration message and save the trajectory
+            pickled_demo = pickle.dumps(demo_msg)
+            trajectory = TrajectoryDB(
+                demo_id=demo.id,
+                type="raw",
+                trajectory_data=pickled_demo
+            )
+            self.session.add(trajectory)
+            self.session.commit()
+
+            rospy.loginfo("Demonstration and trajectory saved successfully.")
+
+        except Exception as e:
+            self.session.rollback()
+            rospy.logerr(f"Failed to save demonstration: {e}")
+
+        finally:
+            self.session.close()
 
     def servicecb_get_demonstration(self, req : GetDemonstrationRequest):
         filename = self.format_filename(req.name)
