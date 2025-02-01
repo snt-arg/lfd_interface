@@ -10,20 +10,24 @@ import matplotlib.pyplot as plt
 
 
 class ReverseDemo:
-    def __init__(self, demo_name):
+    def __init__(self, demo_name, robot_name, trajectory_type="smooth"):
         self.demo_name = demo_name
+        self.robot_name = robot_name
+        self.trajectory_type = trajectory_type
         self.sc_lfd_storage = rospy.ServiceProxy("get_demonstration", GetDemonstration)
         self.pub_save_demo = rospy.Publisher("save_demonstration", DemonstrationMsg , queue_size=1)
         
 
     def run(self):
-        resp = self.sc_lfd_storage(name=self.demo_name)
+        resp = self.sc_lfd_storage(name=self.demo_name, robot_name=self.robot_name, trajectory_type=self.trajectory_type)
         demo_traj = resp.Demonstration.joint_trajectory
         reversed_traj = self.reverse_trajectory(demo_traj)
         self.plot_trajectories(demo_traj, reversed_traj)
         reversed_demo_msg = DemonstrationMsg()
         reversed_demo_msg.joint_trajectory = reversed_traj
-        reversed_demo_msg.name = self.demo_name[:-1] + "reverse" + self.demo_name[-1]
+        reversed_demo_msg.name = self.demo_name
+        reversed_demo_msg.robot_name = self.robot_name
+        reversed_demo_msg.trajectory_type = "reversed"
         self.pub_save_demo.publish(reversed_demo_msg)
 
     def reverse_trajectory(self, trajectory):
@@ -85,7 +89,9 @@ class ReverseDemo:
 if __name__ == "__main__":
     rospy.init_node("reverse_demo")
     demo_name = rospy.get_param("~demo_name")
-    print(demo_name)
-    reverse_demo = ReverseDemo(demo_name)
+    robot_name = rospy.get_param("~robot_name")
+    trajectory_type = rospy.get_param("~trajectory_type", "smooth")
+    # print(demo_name)
+    reverse_demo = ReverseDemo(demo_name, robot_name, trajectory_type)
     reverse_demo.run()
     # rospy.spin()
