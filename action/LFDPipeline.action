@@ -1,5 +1,7 @@
 # goal
 string name
+string robot_name
+string trajectory_type
 float64 duration
 trajectory_msgs/JointTrajectoryPoint goal_joint
 bool train

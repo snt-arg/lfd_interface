@@ -10,9 +10,11 @@ LFDTrainer::LFDTrainer(std::string robot_ns)
 
 LFDTrainer::~LFDTrainer() {}
 
-void LFDTrainer::init(std::string demonstration_name)
+void LFDTrainer::init(std::string demonstration_name, std::string robot_name, std::string trajectory_type)
 {
     demonstration_name_ = demonstration_name;
+    robot_name_ = robot_name;
+    trajectory_type_ = trajectory_type;
 }
 
 
@@ -20,6 +22,8 @@ bool LFDTrainer::loadDemonstration()
 {
     client_load_demonstration_.waitForExistence();
     srv_get_demonstration_.request.name = demonstration_name_;
+    srv_get_demonstration_.request.robot_name = robot_name_;
+    srv_get_demonstration_.request.trajectory_type = trajectory_type_;
 
     if(client_load_demonstration_.call(srv_get_demonstration_)
        && srv_get_demonstration_.response.success)

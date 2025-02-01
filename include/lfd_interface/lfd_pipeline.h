@@ -15,7 +15,7 @@ class LFDPipeline
 
 private:
     ros::NodeHandle nh_;
-    ros::ServiceClient sc_democount_;
+    // ros::ServiceClient sc_democount_;
     MoveitUtil moveit_util_;
     LFDTrainer lfd_trainer_;
     LFDPlanner lfd_planner_;

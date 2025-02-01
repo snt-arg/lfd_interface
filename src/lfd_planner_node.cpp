@@ -9,10 +9,11 @@ int main(int argc, char** argv)
     spinner.start();
 
     //Fetch params
-    std::string demonstration_name,planning_group,base_frame, robot_ns;
+    std::string demonstration_name,planning_group,base_frame, robot_ns, trajectory_type;
     std::size_t error = 0;
     std::string LOGNAME{"lfd_planner"};
     error += !rosparam_shortcuts::get(LOGNAME, pnh, "demonstration_name", demonstration_name);
+    error += !rosparam_shortcuts::get(LOGNAME, pnh, "trajectory_type", trajectory_type);
     error += !rosparam_shortcuts::get(LOGNAME, pnh, "planning_group", planning_group);
     error += !rosparam_shortcuts::get(LOGNAME, pnh, "base_frame", base_frame);
     error += !rosparam_shortcuts::get(LOGNAME, pnh, "robot_ns", robot_ns);
@@ -21,7 +22,7 @@ int main(int argc, char** argv)
     MoveitUtil moveit_util(planning_group,base_frame);
 
     LFDPlanner planner(moveit_util,robot_ns);
-    planner.init(demonstration_name);
+    planner.init(demonstration_name, robot_ns, trajectory_type);
     planner.runViz(); 
 
     ros::waitForShutdown();

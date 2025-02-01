@@ -14,13 +14,15 @@ moveit_util_(moveit_util), trainer(robot_ns)
 LFDPlanner::~LFDPlanner()
 {}
 
-void LFDPlanner::init(std::string demonstration_name,
+void LFDPlanner::init(std::string demonstration_name, std::string robot_name, std::string trajectory_type,
                     trajectory_msgs::JointTrajectoryPoint goal_joint,
                     double duration/*=0.0*/)
 {
     demonstration_name_ = demonstration_name;
+    robot_name_ = robot_name;
+    trajectory_type_ = trajectory_type;
     duration_ = duration;
-    trainer.init(demonstration_name);
+    trainer.init(demonstration_name, robot_name, trajectory_type);
     demonstration_ = trainer.fetchDemonstration();
     if (goal_joint != trajectory_msgs::JointTrajectoryPoint()) 
         goal_joint_ = goal_joint;

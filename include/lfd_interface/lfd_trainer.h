@@ -15,7 +15,7 @@ private:
 
     ros::NodeHandle nh_;
     //name of the trajectory to be loaded
-    std::string demonstration_name_;
+    std::string demonstration_name_, robot_name_, trajectory_type_;
 
     //ros stuff
     ros::ServiceClient client_load_demonstration_, client_train_demonstration_;
@@ -31,6 +31,6 @@ public:
     LFDTrainer(std::string robot_ns);
     ~LFDTrainer();
     void run();
-    void init(std::string demonstration_name);
+    void init(std::string demonstration_name, std::string robot_name, std::string trajectory_type);
     lfd_interface::DemonstrationMsg fetchDemonstration();
 };

@@ -24,7 +24,7 @@ private:
 
     ros::NodeHandle nh_;
     //name of the trained demonstration to use for planning
-    std::string demonstration_name_;
+    std::string demonstration_name_, robot_name_, trajectory_type_;
     double duration_;
 
     MoveitUtil& moveit_util_;
@@ -54,7 +54,7 @@ public:
     lfd_interface::PlanMsg fetchPlanMetaData();
     trajectory_msgs::JointTrajectory runViz();
     trajectory_msgs::JointTrajectory runExec();
-    void init(std::string demonstration_name,
+    void init(std::string demonstration_name, std::string robot_name, std::string trajectory_type,
             trajectory_msgs::JointTrajectoryPoint goal_joint=trajectory_msgs::JointTrajectoryPoint(),
             double duration=0.0);
     void executePlan();
