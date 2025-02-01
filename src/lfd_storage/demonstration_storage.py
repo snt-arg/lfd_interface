@@ -136,25 +136,47 @@ class DemonstrationStorage(object):
                 rospy.logerr(f"Robot with name '{demo_msg.robot_name}' does not exist.")
                 return
 
-            # Create a new demonstration entry
-            demo = DemonstrationDB(
-                name=demo_msg.name,
-                robot_id=robot.id,
-                meta_data={"description": demo_msg.description} 
+            # Check if a demonstration with the same name and robot already exists
+            demo = (
+                self.session.query(DemonstrationDB)
+                .filter_by(name=demo_msg.name, robot_id=robot.id)
+                .first()
             )
-            self.session.add(demo)
-            self.session.commit()
+            
+            if not demo:
+                # Create a new demonstration entry if it does not exist
+                demo = DemonstrationDB(
+                    name=demo_msg.name,
+                    robot_id=robot.id,
+                    meta_data={"description": demo_msg.description} 
+                )
+                self.session.add(demo)
+                self.session.commit()
 
             # Serialize the demonstration message and save the trajectory
             pickled_demo = pickle.dumps(demo_msg)
-            trajectory = TrajectoryDB(
-                demo_id=demo.id,
-                type=demo_msg.trajectory_type,
-                trajectory_data=pickled_demo
-            )
-            self.session.add(trajectory)
-            self.session.commit()
 
+            # Check if a trajectory with the same type already exists for the demonstration
+            existing_trajectory = (
+                self.session.query(TrajectoryDB)
+                .filter_by(demo_id=demo.id, type=demo_msg.trajectory_type)
+                .first()
+            )
+
+            if existing_trajectory:
+                # Override the existing trajectory
+                existing_trajectory.trajectory_data = pickled_demo
+                rospy.logwarn(f"Overriding existing trajectory of type {demo_msg.trajectory_type} for demonstration '{demo_msg.name}'.")
+            else:
+                # Save a new trajectory
+                trajectory = TrajectoryDB(
+                    demo_id=demo.id,
+                    type=demo_msg.trajectory_type,
+                    trajectory_data=pickled_demo
+                )
+                self.session.add(trajectory)
+            
+            self.session.commit()
             rospy.loginfo("Demonstration and trajectory saved successfully.")
 
         except Exception as e:
