@@ -1,4 +1,6 @@
 string name
+string robot_name
+string trajectory_type
 trajectory_msgs/JointTrajectoryPoint start
 trajectory_msgs/JointTrajectoryPoint goal
 float64 tau

@@ -1,6 +1,8 @@
 string name
-
+string robot_name
+string trajectory_type
 ---
 
 bool success
+string message
 DemonstrationMsg Demonstration

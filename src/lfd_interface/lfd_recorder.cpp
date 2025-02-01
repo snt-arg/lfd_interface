@@ -42,6 +42,7 @@ void LFDRecorder::run(std::string demonstration_name, std::string robot_name, st
     demonstration_.name = demonstration_name;
     demonstration_.robot_name = robot_name;
     demonstration_.description = description;
+    demonstration_.trajectory_type = "raw";
 
     auto visual_tools = moveit_util_.getVisualTools();
 

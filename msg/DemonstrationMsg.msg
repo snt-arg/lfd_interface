@@ -1,5 +1,6 @@
 string name
 string robot_name
+string trajectory_type
 trajectory_msgs/JointTrajectory joint_trajectory
 PoseTrajectory pose_trajectory
 string description

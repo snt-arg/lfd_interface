@@ -94,32 +94,32 @@ class DemonstrationStorage(object):
         Base.metadata.create_all(engine)
         Session = sessionmaker(bind=engine)
         self.session = Session()
-        self.dir_template = "demonstrations/{}"
-        self.filename_template = "demonstrations/{}/{}.pickle"
+        # self.dir_template = "demonstrations/{}"
+        # self.filename_template = "demonstrations/{}/{}.pickle"
         rospy.Subscriber("save_demonstration", DemonstrationMsg, self.subcb_save_trajectory)
         self.service = rospy.Service('get_demonstration', GetDemonstration, self.servicecb_get_demonstration)
-        self.service = rospy.Service('fetch_demo_count', DemoCount, self.servicecb_demo_count)
+        # self.service = rospy.Service('fetch_demo_count', DemoCount, self.servicecb_demo_count)
 
-    def servicecb_demo_count(self, msg):
-        dir = self.dir_template.format(msg.name)
-        if not os.path.exists(dir):
-            return DemoCountResponse(count=0)
+    # def servicecb_demo_count(self, msg):
+    #     dir = self.dir_template.format(msg.name)
+    #     if not os.path.exists(dir):
+    #         return DemoCountResponse(count=0)
         
-        count = len([name for name in os.listdir(dir) if os.path.isfile(os.path.join(dir, name))])
-        return DemoCountResponse(count=count)
+    #     count = len([name for name in os.listdir(dir) if os.path.isfile(os.path.join(dir, name))])
+    #     return DemoCountResponse(count=count)
 
 
-    def format_filename(self, filename):
-        # Split text (demo base name) and number (demo id) from  the original message
-        temp = re.compile("([a-zA-Z]+)([0-9]+)")
-        name = temp.match(filename).groups()
+    # def format_filename(self, filename):
+    #     # Split text (demo base name) and number (demo id) from  the original message
+    #     temp = re.compile("([a-zA-Z]+)([0-9]+)")
+    #     name = temp.match(filename).groups()
 
-        # Check if the directory exists
-        dir = self.dir_template.format(name[0])
-        if not os.path.exists(dir):
-            os.makedirs(dir)
+    #     # Check if the directory exists
+    #     dir = self.dir_template.format(name[0])
+    #     if not os.path.exists(dir):
+    #         os.makedirs(dir)
 
-        return self.filename_template.format(name[0],name[1])
+    #     return self.filename_template.format(name[0],name[1])
 
 
     def subcb_save_trajectory(self, demo_msg : DemonstrationMsg):
@@ -140,7 +140,7 @@ class DemonstrationStorage(object):
             demo = DemonstrationDB(
                 name=demo_msg.name,
                 robot_id=robot.id,
-                meta_data={"description": demo_msg.description}  # Example metadata
+                meta_data={"description": demo_msg.description} 
             )
             self.session.add(demo)
             self.session.commit()
@@ -149,7 +149,7 @@ class DemonstrationStorage(object):
             pickled_demo = pickle.dumps(demo_msg)
             trajectory = TrajectoryDB(
                 demo_id=demo.id,
-                type="raw",
+                type=demo_msg.trajectory_type,
                 trajectory_data=pickled_demo
             )
             self.session.add(trajectory)
@@ -165,19 +165,46 @@ class DemonstrationStorage(object):
             self.session.close()
 
     def servicecb_get_demonstration(self, req : GetDemonstrationRequest):
-        filename = self.format_filename(req.name)
-        res = GetDemonstrationResponse()
         try:
-
-            with open(filename, 'rb') as file:
-                demonstration = pickle.load(file)
-
-            res.Demonstration = demonstration
-            res.success = True
-
-        except OSError as exception:
-            res.success = False
-            rospy.logerr(exception)
-    
-        return res
+            # Retrieve the demonstration by name and robot name
+            demo = (
+                self.session.query(DemonstrationDB)
+                .join(RobotDB, DemonstrationDB.robot_id == RobotDB.id)
+                .filter(DemonstrationDB.name == req.name, RobotDB.name == req.robot_name)
+                .first()
+            )
+            
+            if not demo:
+                rospy.logwarn(f"No demonstration found with name: {req.name} for robot: {req.robot_name}")
+                return GetDemonstrationResponse(success=False, message=f"No demonstration found with name: {req.name} for robot: {req.robot_name}")
+            
+            # Retrieve the associated trajectory of the requested type
+            trajectory = (
+                self.session.query(TrajectoryDB)
+                .filter_by(demo_id=demo.id, type=req.trajectory_type)
+                .first()
+            )
+            
+            if not trajectory:
+                rospy.logwarn(f"No trajectory of type {req.trajectory_type} found for demonstration: {req.name} and robot: {req.robot_name}")
+                return GetDemonstrationResponse(success=False, message=f"No trajectory of type {req.trajectory_type} found for demonstration: {req.name} and robot: {req.robot_name}")
+                       
+            # Deserialize the trajectory data
+            demo_msg = pickle.loads(trajectory.trajectory_data)
+            
+            # Construct the response
+            response = GetDemonstrationResponse(
+                success=True,
+                message="Demonstration retrieved successfully",
+                Demonstration=demo_msg
+            )
+            
+            return response
+        
+        except Exception as e:
+            rospy.logerr(f"Failed to retrieve demonstration: {e}")
+            return GetDemonstrationResponse(success=False, message=f"Error retrieving demonstration: {str(e)}")
+        
+        finally:
+            self.session.close()
 
