@@ -60,7 +60,7 @@ def scale_demonstration(demonstration, scale):
 def crop_and_scale(demonstration, t=10, scale=0.2):
     demonstration = cut_after_t_seconds(demonstration, t)
     demonstration = scale_demonstration(demonstration, scale)
-    demonstration.name = "filter" + demonstration.name
+    # demonstration.name = "filter" + demonstration.name
     return demonstration
 
 
@@ -69,6 +69,9 @@ if __name__ == '__main__':
     rospy.init_node('demonstration_filter_node')
     
     demo_name = rospy.get_param("~demo_name")
+    robot_name = rospy.get_param("~robot_name")
+    trajectory_type = rospy.get_param("~trajectory_type")
+
     crop_time = rospy.get_param("~crop_time")
     scaling_factor = rospy.get_param("~scaling_factor")
 
@@ -76,7 +79,7 @@ if __name__ == '__main__':
     sc_lfd_storage = rospy.ServiceProxy("get_demonstration", GetDemonstration)
     pub_save_demo = rospy.Publisher("save_demonstration", DemonstrationMsg , queue_size=1)
 
-    resp = sc_lfd_storage(name=demo_name)
+    resp = sc_lfd_storage(name=demo_name, robot_name=robot_name, trajectory_type=trajectory_type)
     demo = resp.Demonstration
 
     demo_processor = Demonstration()
@@ -86,6 +89,8 @@ if __name__ == '__main__':
 
     demo_filtered = crop_and_scale(demo_filtered, float(crop_time), float(scaling_factor))
     rospy.sleep(2)
+    
+    demo.trajectory_type = "filtered"
     pub_save_demo.publish(demo_filtered)
     print("published")    
 

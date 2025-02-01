@@ -1,6 +1,9 @@
 <launch>
 
     <arg name="demo_name" default="picknplaceee0"/>
+    <arg name="robot_name" default="fr3"/>
+    <arg name="trajectory_type" value="raw"/>
+    
     <arg name="crop_time" default="8"/>
     <arg name="scaling_factor" default="0.2"/>
 
@@ -8,6 +11,8 @@
 
     <node name="simple_filter" pkg="lfd_interface" type="filter.py" output="screen">
         <param name="demo_name" value="$(arg demo_name)"/>
+        <param name="robot_name" value="$(arg robot_name)"/>
+        <param name="trajectory_type" value="$(arg trajectory_type)"/>
         <param name="crop_time" value="$(arg crop_time)"/>
         <param name="scaling_factor" value="$(arg scaling_factor)"/>
     </node>
