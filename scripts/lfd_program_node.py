@@ -428,18 +428,19 @@ if __name__ == "__main__":
 
 
     elif robot=="fr3":
-        debug=True
+        debug=False
         runner = ProgramRunner(robot="fr3")
         runner.set_motion_mode("dmp")
         runner.configure_motion(duration_scale=duration_scale)
 
-        runner.configure_motion(demo_name="smoothfrpickdemo")
-        runner.move(debug=debug)
-        runner.gripper.gripper_grasp()
+        while(True):
+            runner.configure_motion(demo_name="sql_demo_test", trajectory_type="reversed")
+            runner.move(debug=debug)
+            # runner.gripper.gripper_grasp()
 
-        runner.configure_motion(demo_name="smoothfrplace")
-        runner.move(debug=debug)
-        runner.gripper.gripper_open()
+            runner.configure_motion(demo_name="sql_demo_test")
+            runner.move(debug=debug)
+        # runner.gripper.gripper_open()
 
         # runner.robot.sm_runner.run_rapid(r_routine="movecone", nonblocking=False)
 
