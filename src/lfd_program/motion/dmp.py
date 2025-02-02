@@ -18,6 +18,8 @@ class DMPProgram(MotionProgram):
 
         self.dmps = []
         self.demo_name = None
+        self.robot_name = robot_ns
+        self.trajectory_type = "smooth"
         self.default_joint_target = None
         self.duration_scale = 0
 
@@ -25,13 +27,16 @@ class DMPProgram(MotionProgram):
     def configure(self, **kwargs):
         if "demo_name" in kwargs:
             self.demo_name = kwargs.get("demo_name")
+            self.trajectory_type = kwargs.get("trajectory_type", "smooth")
+            
             self.default_joint_target = kwargs.get("default_joint_target", None)
             self._set_default_target()
             
-            if self.demo_name not in self.dmps:
+            demo_alias = self.trajectory_type + self.demo_name
+            if demo_alias not in self.dmps:
                 self.train()
-                self.dmps.append(self.demo_name)
-
+                self.dmps.append(demo_alias)
+        
         if "default_joint_target" in kwargs:
             self.default_joint_target = kwargs.get("default_joint_target", None)
             self._set_default_target()
@@ -44,12 +49,14 @@ class DMPProgram(MotionProgram):
             self.default_joint_target = self.demo_goal_joint()        
         
     def train(self):
-        goal = LFDPipelineGoal(name=self.demo_name, train=True)
+        goal = LFDPipelineGoal(name=self.demo_name, robot_name=self.robot_name,
+                               trajectory_type=self.trajectory_type,train=True)
         self.a_client.send_goal(goal)
         self.a_client.wait_for_result()
     
     def visualize(self, goal_joint = JointTrajectoryPoint()):
-        goal = LFDPipelineGoal(name=self.demo_name, visualize=True,
+        goal = LFDPipelineGoal(name=self.demo_name, robot_name=self.robot_name,
+                               trajectory_type=self.trajectory_type, visualize=True,
                                goal_joint=goal_joint, duration=self.duration_scale)
         self.a_client.send_goal(goal)
         self.a_client.wait_for_result()
@@ -57,7 +64,8 @@ class DMPProgram(MotionProgram):
         return result.plan
 
     def execute(self, goal_joint = JointTrajectoryPoint()):
-        goal = LFDPipelineGoal(name=self.demo_name, execute=True,
+        goal = LFDPipelineGoal(name=self.demo_name, robot_name=self.robot_name,
+                               trajectory_type=self.trajectory_type, execute=True,
                                goal_joint=goal_joint, duration=self.duration_scale)
         self.a_client.send_goal(goal)
         self.a_client.wait_for_result()
@@ -65,9 +73,9 @@ class DMPProgram(MotionProgram):
         return result.plan
 
     def _fetch_demo(self):
-        demo_name = self.demo_name + "0"
         s = rospy.ServiceProxy('get_demonstration', GetDemonstration)
-        resp = s(demo_name)
+        print(self.demo_name, self.robot_name, self.trajectory_type)
+        resp = s(name=self.demo_name, robot_name=self.robot_name, trajectory_type=self.trajectory_type)
         return resp.Demonstration
 
     def demo_goal_joint(self):
