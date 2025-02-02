@@ -35,6 +35,8 @@ void LFDPlanner::getPlan(trajectory_msgs::JointTrajectoryPoint start,
 {
     client_plan_lfd_.waitForExistence();
     plan_metadata_.name = demonstration_name_;
+    plan_metadata_.robot_name = robot_name_;
+    plan_metadata_.trajectory_type = trajectory_type_;
     plan_metadata_.start = start;
     plan_metadata_.goal = goal;
     if (duration_ == 0.0)
